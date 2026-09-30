@@ -3,33 +3,37 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
-<meta name="theme-color" content="#060913" />
-<title>D R I F T: SUBSPACE — Test 03</title>
+<meta name="theme-color" content="#04070f" />
+<title>D R I F T: SUBSPACE — Test 04</title>
 <style>
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#060913;color:#eef4ff;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;touch-action:none}
-canvas{position:fixed;inset:0;width:100%;height:100%;display:block;background:#060913}
-#shade{position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 46%,rgba(255,255,255,.025) 0%,rgba(0,0,0,.05) 38%,rgba(0,0,0,.22) 74%,rgba(0,0,0,.52) 100%)}
-#sceneTag{position:fixed;left:16px;bottom:14px;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(235,241,255,.68);text-shadow:0 1px 8px #000;transition:opacity 1.5s ease;pointer-events:none}
-#ui{position:fixed;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(92vw,580px);padding:13px 14px 11px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(6,10,20,.44);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 10px 40px rgba(0,0,0,.35);transition:opacity .8s ease,transform .8s ease;z-index:5}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#04070f;color:#eef4ff;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;touch-action:none}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block;background:#04070f}
+#shade{position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 48%,rgba(255,255,255,.018) 0%,rgba(0,0,0,.03) 32%,rgba(0,0,0,.16) 64%,rgba(0,0,0,.54) 100%)}
+#sceneTag{position:fixed;left:16px;bottom:14px;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(235,241,255,.66);text-shadow:0 1px 8px #000;transition:opacity 1.5s ease;pointer-events:none}
+#ui{position:fixed;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(94vw,640px);padding:13px 14px 11px;border:1px solid rgba(255,255,255,.11);border-radius:18px;background:rgba(5,8,17,.42);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 10px 40px rgba(0,0,0,.35);transition:opacity .8s ease,transform .8s ease;z-index:5}
 #ui.hidden{opacity:0;pointer-events:none;transform:translate(-50%,12px)}
-.top{display:flex;align-items:center;gap:10px}.brand{font-size:11px;letter-spacing:.24em;font-weight:600;flex:1;white-space:nowrap}.sub{opacity:.66;font-size:9px;letter-spacing:.14em;margin-top:3px}
+.top{display:flex;align-items:center;gap:10px}.brand{font-size:11px;letter-spacing:.24em;font-weight:600;flex:1;white-space:nowrap}.sub{opacity:.64;font-size:9px;letter-spacing:.14em;margin-top:3px}
 button,.pick{appearance:none;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:#edf3ff;border-radius:999px;height:34px;padding:0 13px;font:600 10px/34px -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
 button:disabled{opacity:.35}.pick{display:inline-block}.controls{display:flex;gap:8px;align-items:center;margin-top:11px;flex-wrap:wrap}.file{display:none}.filename{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;color:rgba(235,241,255,.64)}
+#free.active{background:rgba(255,255,255,.18)}
 .hint{margin-top:8px;font-size:9px;color:rgba(235,241,255,.48);letter-spacing:.03em}
-@media (max-width:560px){#ui{width:calc(100vw - 28px);padding:11px 12px 10px}.brand{font-size:10px}.sub{font-size:8px}}
+@media (max-width:560px){#ui{width:calc(100vw - 24px);padding:11px 12px 10px}.brand{font-size:10px}.sub{font-size:8px}}
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
 <div id="shade"></div>
-<div id="sceneTag">D R I F T · SUBSPACE · COSMIC FLOW</div>
+<div id="sceneTag">D R I F T · SUBSPACE · FREE DRIFT</div>
 <div id="ui">
-  <div class="top"><div><div class="brand">D R I F T: SUBSPACE</div><div class="sub">TEST 03 · THROUGH THE NEBULA</div></div><button id="fs">FULL</button></div>
+  <div class="top"><div><div class="brand">D R I F T: SUBSPACE</div><div class="sub">TEST 04 · EIGHT MODES + FREE DRIFT</div></div><button id="fs">FULL</button></div>
   <div class="controls">
+    <button id="free" class="active">FREE DRIFT</button>
+    <button id="mode">MODE: COSMIC FLOW</button>
     <label class="pick" for="file">CHOOSE AUDIO</label><input class="file" id="file" type="file" accept="audio/*,.mp3,.wav,.m4a,.aac,.flac,.ogg" />
-    <button id="play" disabled>PLAY</button><button id="regen">RESEED</button><span id="name" class="filename">No audio loaded — visual runs autonomously</span>
+    <button id="play" disabled>PLAY</button><button id="regen">RESEED</button>
   </div>
-  <div class="hint">Particle mist replaces the visible dot field. Faster traversal. Scenes shift every 30 seconds. Double-tap/click anywhere to show or hide controls.</div>
+  <div class="controls" style="margin-top:8px"><span id="name" class="filename">No audio loaded — visual runs autonomously</span></div>
+  <div class="hint">Free Drift cycles through eight space moods every 30 seconds. Manual mode lets you sit with one mode. Double-tap/click anywhere to show or hide controls.</div>
 </div>
 <audio id="audio" preload="metadata"></audio>
 <script>
@@ -37,6 +41,9 @@ button:disabled{opacity:.35}.pick{display:inline-block}.controls{display:flex;ga
 const canvas=document.getElementById('c');
 const gl=canvas.getContext('webgl',{alpha:false,antialias:false,powerPreference:'high-performance'})||canvas.getContext('experimental-webgl');
 if(!gl){document.body.innerHTML='<div style="padding:24px;color:white">WebGL is not available on this device.</div>';return;}
+
+const MODE_NAMES=['COSMIC FLOW','TARANTULA VEIL','ORION HOLLOW','CAT\'S PAW MIST','PROTOSTAR RUN','SUBSPACE GLOW','VOID APPROACH','BLUE EMBER'];
+let freeDrift=true, manualMode=0;
 
 const vs=`attribute vec2 p; varying vec2 v; void main(){v=p*.5+.5;gl_Position=vec4(p,0.,1.);}`;
 const fs=`precision mediump float;
@@ -48,42 +55,63 @@ uniform float lowE;
 uniform float midE;
 uniform float highE;
 uniform float energy;
+uniform float mode;
+uniform float modeBlend;
 
 float hash21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);} 
 float noise2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);float a=hash21(i),b=hash21(i+vec2(1.,0.)),c=hash21(i+vec2(0.,1.)),d=hash21(i+vec2(1.,1.));return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);} 
 float fbm(vec2 p){float s=0.,a=.5;for(int i=0;i<6;i++){s+=a*noise2(p);p=p*2.03+vec2(17.1,9.2);a*=.52;}return s;}
 float ridge(vec2 p){float s=0.,a=.5;for(int i=0;i<5;i++){float v=abs(noise2(p)*2.0-1.0);s += a*(1.0-v);p=p*2.07+vec2(12.4,-6.8);a*=.55;}return s;}
 
-vec3 pal0(float s){
-  if(s<0.5) return vec3(0.08,0.12,0.26);
-  if(s<1.5) return vec3(0.34,0.16,0.09);
-  if(s<2.5) return vec3(0.20,0.08,0.22);
-  if(s<3.5) return vec3(0.08,0.23,0.18);
-  if(s<4.5) return vec3(0.22,0.11,0.04);
-  return vec3(0.10,0.18,0.26);
+vec3 basePal(float i){
+  if(i<0.5) return vec3(0.05,0.08,0.18);
+  if(i<1.5) return vec3(0.18,0.07,0.16);
+  if(i<2.5) return vec3(0.08,0.13,0.24);
+  if(i<3.5) return vec3(0.12,0.10,0.06);
+  if(i<4.5) return vec3(0.16,0.08,0.05);
+  if(i<5.5) return vec3(0.05,0.11,0.18);
+  if(i<6.5) return vec3(0.03,0.05,0.10);
+  return vec3(0.05,0.10,0.15);
 }
-vec3 pal1(float s){
-  if(s<0.5) return vec3(0.72,0.42,0.14);
-  if(s<1.5) return vec3(0.12,0.32,0.56);
-  if(s<2.5) return vec3(0.80,0.28,0.60);
-  if(s<3.5) return vec3(0.94,0.88,0.70);
-  if(s<4.5) return vec3(0.82,0.26,0.14);
-  return vec3(0.48,0.70,0.90);
+vec3 glowPal(float i){
+  if(i<0.5) return vec3(0.58,0.36,0.14);
+  if(i<1.5) return vec3(0.72,0.28,0.58);
+  if(i<2.5) return vec3(0.16,0.38,0.65);
+  if(i<3.5) return vec3(0.85,0.78,0.58);
+  if(i<4.5) return vec3(0.76,0.28,0.14);
+  if(i<5.5) return vec3(0.46,0.68,0.92);
+  if(i<6.5) return vec3(0.18,0.24,0.42);
+  return vec3(0.34,0.56,0.86);
 }
-vec3 pal2(float s){
-  if(s<0.5) return vec3(0.96,0.92,0.84);
-  if(s<1.5) return vec3(0.64,0.90,0.98);
-  if(s<2.5) return vec3(0.96,0.98,0.94);
-  if(s<3.5) return vec3(1.00,0.70,0.26);
-  if(s<4.5) return vec3(0.96,0.68,0.34);
-  return vec3(0.94,0.96,1.00);
+vec3 accentPal(float i){
+  if(i<0.5) return vec3(0.92,0.90,0.82);
+  if(i<1.5) return vec3(0.92,0.98,0.95);
+  if(i<2.5) return vec3(0.84,0.94,1.00);
+  if(i<3.5) return vec3(1.00,0.68,0.24);
+  if(i<4.5) return vec3(0.98,0.72,0.34);
+  if(i<5.5) return vec3(0.94,0.96,1.00);
+  if(i<6.5) return vec3(0.62,0.72,0.95);
+  return vec3(0.98,0.88,0.66);
 }
-
-float microMist(vec2 p, float scale, vec2 flow){
-  float a = fbm(p*scale + flow);
-  float b = fbm(p*(scale*1.9) - flow*1.4 + vec2(4.1,-2.7));
-  float c = fbm(p*(scale*3.4) + flow*2.2 + vec2(-7.3,3.8));
-  return a*0.50 + b*0.32 + c*0.18;
+float speedMul(float i){
+  if(i<0.5) return 1.00;
+  if(i<1.5) return 1.06;
+  if(i<2.5) return 0.94;
+  if(i<3.5) return 0.88;
+  if(i<4.5) return 1.14;
+  if(i<5.5) return 0.92;
+  if(i<6.5) return 1.20;
+  return 1.02;
+}
+float densityMul(float i){
+  if(i<0.5) return 1.00;
+  if(i<1.5) return 1.02;
+  if(i<2.5) return 0.92;
+  if(i<3.5) return 1.10;
+  if(i<4.5) return 1.06;
+  if(i<5.5) return 0.96;
+  if(i<6.5) return 0.84;
+  return 0.90;
 }
 
 void main(){
@@ -91,106 +119,105 @@ void main(){
   float asp=r.x/r.y;
   vec2 q=(uv-.5)*vec2(asp,1.0);
 
-  float cycle=t/30.0;
-  float scene=floor(mod(cycle,6.0));
-  float blend=smoothstep(0.72,1.0,fract(cycle));
-  float scene2=mod(scene+1.0,6.0);
-  vec3 c0=mix(pal0(scene),pal0(scene2),blend);
-  vec3 c1=mix(pal1(scene),pal1(scene2),blend);
-  vec3 c2=mix(pal2(scene),pal2(scene2),blend);
+  float mA = mode;
+  float mB = mod(mode+1.0,8.0);
+  vec3 c0 = mix(basePal(mA),basePal(mB),modeBlend);
+  vec3 c1 = mix(glowPal(mA),glowPal(mB),modeBlend);
+  vec3 c2 = mix(accentPal(mA),accentPal(mB),modeBlend);
+  float spd = mix(speedMul(mA),speedMul(mB),modeBlend);
+  float densMul = mix(densityMul(mA),densityMul(mB),modeBlend);
 
-  // Faster, more directional traversal.
-  vec2 forward = vec2(0.0, -t*(0.055 + 0.018*midE));
-  vec2 drift = vec2(0.12*sin(t*0.11 + seed*2.3), 0.08*cos(t*0.08 + seed*1.7));
-  vec2 cam = forward + drift;
+  // darker subspace base
+  vec3 col = vec3(0.008,0.012,0.024) + c0*0.055;
 
-  vec3 col = vec3(0.022,0.030,0.055) + c0*0.12 + c1*0.05;
+  // stronger forward drift sensation: downward/forward passage with lateral meander
+  vec2 forward = vec2(0.0, -t*(0.038 + 0.012*midE) * spd);
+  vec2 meander = vec2(0.08*sin(t*0.065 + seed*2.3), 0.05*cos(t*0.048 + seed*1.7));
+  vec2 cam = forward + meander;
   float fogA = 0.0;
 
-  // Volumetric-like nebula layers to create moving through the field.
-  for(int i=0;i<12;i++){
+  // fewer, broader nebula banks; darker background; stronger parallax movement
+  for(int i=0;i<10;i++){
     float fi=float(i);
-    float z=fi/11.0;
-    float travel = fract(z + t*(0.017 + 0.010*midE)*(0.72 + z*0.42) + seed*0.19);
-    float depth = mix(3.2, 0.26, travel);
-    vec2 p = q*depth + cam*(0.28 + z*1.55);
-    p += vec2(travel*0.70, -travel*0.34) + vec2(seed*1.8, -seed*1.4);
+    float z=fi/9.0;
+    float travel = fract(z + t*(0.020 + 0.010*midE) * (0.64 + z*0.54) * spd + seed*0.17);
+    float depth = mix(4.0, 0.20, travel);
+    float expand = mix(0.90, 2.40, pow(1.0-travel, 1.4));
+    vec2 p = q * depth * expand + cam*(0.32 + z*1.75);
+    p += vec2(travel*0.62, -travel*0.52) + vec2(seed*1.5, -seed*1.2);
 
-    float broad = fbm(p*0.34 + vec2(6.0,-4.0));
-    float soft  = fbm(p*0.82 + vec2(-3.0,7.3) - t*0.006);
-    float fine  = fbm(p*1.72 + vec2(2.6,-8.4) + t*0.009);
-    float fil   = ridge(p*1.08 + vec2(1.0,7.0) - t*0.007);
-    float cav   = fbm(p*0.22 + vec2(18.0,2.0));
+    float broad = fbm(p*0.28 + vec2(6.0,-4.0));
+    float soft  = fbm(p*0.70 + vec2(-3.0,7.3) - t*0.004);
+    float fil   = ridge(p*0.92 + vec2(1.0,7.0) - t*0.005);
+    float cav   = fbm(p*0.18 + vec2(18.0,2.0));
+    float density = (broad*0.54 + soft*0.30 + fil*0.18) * densMul;
+    density += (lowE-0.22)*0.12;
+    density -= smoothstep(0.42,0.82,cav) * 0.18;
 
-    float density = broad*0.44 + soft*0.26 + fine*0.12 + fil*0.24;
-    density += (lowE-0.22)*0.15 + (midE-0.22)*0.09;
-    density -= smoothstep(0.40,0.82,cav) * 0.20;
+    float body = smoothstep(0.48,0.80,density);
+    float filament = smoothstep(0.44,0.88,fil) * smoothstep(0.36,0.92,broad);
+    float alpha = body * mix(0.040,0.145,pow(1.0-travel,1.35));
+    alpha *= smoothstep(0.0,0.05,travel) * smoothstep(1.0,0.68,travel);
+    alpha += filament * 0.014 * (0.40 + highE);
 
-    float body = smoothstep(0.40,0.78,density);
-    float filament = smoothstep(0.34,0.84,fil) * smoothstep(0.30,0.90,broad);
-    float alpha = body * mix(0.055,0.17,pow(1.0-travel,1.25));
-    alpha *= smoothstep(0.0,0.05,travel) * smoothstep(1.0,0.70,travel);
-    alpha += filament * 0.025 * (0.45 + highE);
-
-    float inner = fbm(p*2.25 + vec2(5.0,-7.0));
-    float heat  = ridge(p*1.85 + vec2(-8.0,3.0));
-    vec3 local = mix(c0,c1,clamp(inner*0.95 + broad*0.32,0.0,1.0));
-    local = mix(local,c2,smoothstep(0.58,0.95,heat)*(0.32 + 0.26*highE));
-    local += c2 * smoothstep(0.70,0.98,inner) * 0.10;
+    float inner = fbm(p*1.65 + vec2(5.0,-7.0));
+    float heat  = ridge(p*1.25 + vec2(-8.0,3.0));
+    vec3 local = mix(c0,c1,clamp(inner*0.86 + broad*0.34,0.0,1.0));
+    local = mix(local,c2,smoothstep(0.66,0.96,heat)*(0.18 + 0.18*highE));
+    local *= 0.82;
 
     col += (1.0-fogA) * local * alpha;
-    fogA += (1.0-fogA) * alpha * 0.90;
+    fogA += (1.0-fogA) * alpha * 0.88;
   }
 
-  // Large internal illuminated regions.
-  vec2 gp1 = q - vec2(0.22*sin(t*0.020 + seed*4.0), 0.16*cos(t*0.017));
-  vec2 gp2 = q + vec2(0.18*cos(t*0.016 + seed*2.2), 0.14*sin(t*0.014 + 1.1));
-  float g1 = smoothstep(0.92,0.08,length(gp1)) * smoothstep(0.30,0.90,fbm(gp1*1.18 + t*0.010 + seed));
-  float g2 = smoothstep(0.78,0.06,length(gp2)) * smoothstep(0.32,0.92,fbm(gp2*1.54 - t*0.006 + seed*1.8));
-  col += c1 * g1 * (0.14 + 0.09*highE);
-  col += c2 * g2 * (0.09 + 0.10*highE);
+  // subtle internal illuminated bodies, less showy
+  vec2 gp1 = q - vec2(0.18*sin(t*0.013 + seed*4.0), 0.12*cos(t*0.011));
+  vec2 gp2 = q + vec2(0.14*cos(t*0.010 + seed*2.2), 0.11*sin(t*0.012 + 1.1));
+  float g1 = smoothstep(0.92,0.10,length(gp1)) * smoothstep(0.44,0.88,fbm(gp1*1.0 + t*0.006 + seed));
+  float g2 = smoothstep(0.84,0.08,length(gp2)) * smoothstep(0.46,0.90,fbm(gp2*1.3 - t*0.004 + seed*1.8));
+  col += c1 * g1 * (0.05 + 0.04*highE);
+  col += c2 * g2 * (0.03 + 0.03*highE);
 
-  // Particle dust as moving mist, not visible uniform dots.
-  vec2 flow1 = vec2(t*0.11, -t*0.18) + vec2(seed*4.0, seed*2.0);
-  vec2 flow2 = vec2(-t*0.21, t*0.16) + vec2(seed*2.7, -seed*5.1);
-  float mist1 = microMist(q*0.95 + cam*1.2, 2.6, flow1);
-  float mist2 = microMist(q*1.25 + cam*1.7, 4.0, flow2);
-  float mist3 = microMist(q*1.75 + cam*2.1, 6.2, flow1*1.3 - flow2*0.4);
-  float mist = mist1*0.48 + mist2*0.34 + mist3*0.18;
-  mist = smoothstep(0.42, 0.88, mist);
-  mist *= (0.10 + fogA*0.42 + highE*0.10);
-  col += mix(c1,c2,0.55) * mist * 0.34;
+  // particle dust as fine mist, not dots
+  vec2 flow1 = vec2(t*0.05, -t*0.09) + vec2(seed*3.0, seed*1.2);
+  vec2 flow2 = vec2(-t*0.11, t*0.08) + vec2(seed*1.9, -seed*3.2);
+  float mist1 = fbm(q*1.2 + cam*1.6 + flow1);
+  float mist2 = fbm(q*2.1 + cam*2.4 - flow2 + vec2(7.0,-2.0));
+  float mist3 = fbm(q*3.8 + cam*3.2 + flow1*1.6 - flow2*0.7 + vec2(-4.0,6.0));
+  float mist = mist1*0.52 + mist2*0.31 + mist3*0.17;
+  mist = smoothstep(0.50,0.84,mist);
+  mist *= (0.04 + fogA*0.18 + highE*0.05);
+  col += mix(c1,c2,0.35) * mist * 0.22;
 
-  // Micro-grain shimmer that swirls and breathes inside the gas.
-  vec2 mp = q*vec2(18.0,22.0) + vec2(t*0.65,-t*0.90);
-  mp += vec2(fbm(q*2.0 + flow1), fbm(q*2.3 + flow2))*4.0;
-  float micro = noise2(mp) * 0.55 + noise2(mp*1.9 + vec2(7.0,-2.0))*0.30 + noise2(mp*3.4 + vec2(-4.0,6.0))*0.15;
-  micro = smoothstep(0.48,0.82,micro);
-  float microFlick = 0.72 + 0.28*sin(t*1.8 + q.x*8.0 + q.y*5.0);
-  col += vec3(1.0) * micro * microFlick * (0.020 + 0.030*highE) * (0.25 + fogA*0.95);
+  // micro-grain only within the gas field
+  vec2 mp = q*vec2(22.0,26.0) + vec2(t*0.28,-t*0.42) + cam*6.0;
+  float micro = noise2(mp) * 0.55 + noise2(mp*1.8 + vec2(7.0,-2.0))*0.30 + noise2(mp*3.0 + vec2(-4.0,6.0))*0.15;
+  micro = smoothstep(0.54,0.80,micro);
+  float microFlick = 0.78 + 0.22*sin(t*1.2 + q.x*7.0 + q.y*4.0);
+  col += vec3(1.0) * micro * microFlick * (0.012 + 0.015*highE) * (0.12 + fogA*0.55);
 
-  // Very sparse occasional perceptible specks only.
-  vec2 sp = q*10.0 + cam*3.0;
-  float speckCell = hash21(floor(sp*14.0 + seed*47.0));
-  float speck = smoothstep(0.14,0.0,length(fract(sp*14.0 + seed*47.0)-0.5))*step(0.9925,speckCell);
-  speck *= (0.08 + 0.12*highE) * (0.25 + 0.75*fogA);
+  // extremely sparse perceivable specks only
+  vec2 sp = q*8.0 + cam*3.2;
+  float speckCell = hash21(floor(sp*10.0 + seed*43.0));
+  float speck = smoothstep(0.12,0.0,length(fract(sp*10.0 + seed*43.0)-0.5))*step(0.9972,speckCell);
+  speck *= (0.03 + 0.04*highE) * (0.18 + 0.60*fogA);
   col += c2 * speck;
 
-  // A tiny residual far field so it doesn't look empty, but no obvious star grid.
-  float residue = smoothstep(0.9975,1.0,hash21(floor((uv+0.5)*vec2(170.0,240.0) + vec2(seed*31.0,t*0.7))));
-  col += vec3(0.7,0.8,1.0) * residue * 0.012;
+  // subtle residual star field in far void, almost imperceptible
+  float residue = smoothstep(0.9993,1.0,hash21(floor((uv+0.5)*vec2(170.0,240.0) + vec2(seed*31.0,t*0.14))));
+  col += vec3(0.55,0.62,0.78) * residue * 0.004;
 
-  // Contrast and lift.
-  float voidN = fbm(q*0.40 + cam*0.35 + vec2(seed*5.0,-seed*3.0));
-  float voidMask = smoothstep(0.60,0.84,voidN) * (0.10 + 0.11*lowE);
+  // keep it dark
+  float voidN = fbm(q*0.30 + cam*0.25 + vec2(seed*4.0,-seed*3.0));
+  float voidMask = smoothstep(0.58,0.86,voidN) * (0.10 + 0.10*lowE);
   col *= 1.0 - voidMask*0.42;
 
   float vig = 1.0 - smoothstep(0.46,1.0,length(q*vec2(0.74,1.0)));
-  col *= 0.83 + 0.17*vig;
+  col *= 0.82 + 0.18*vig;
 
-  col *= 1.00 + 0.20*energy + 0.09*highE;
-  col += vec3(0.07,0.075,0.085);
-  col = pow(max(col,vec3(0.0)), vec3(0.88));
+  col *= 0.98 + 0.12*energy + 0.05*highE;
+  col += vec3(0.018,0.020,0.025);
+  col = pow(max(col,vec3(0.0)), vec3(0.94));
   col = clamp(col,0.0,1.0);
   gl_FragColor = vec4(col,1.0);
 }`;
@@ -198,7 +225,7 @@ void main(){
 function shader(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s;}
 const prog=gl.createProgram();gl.attachShader(prog,shader(gl.VERTEX_SHADER,vs));gl.attachShader(prog,shader(gl.FRAGMENT_SHADER,fs));gl.linkProgram(prog);if(!gl.getProgramParameter(prog,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(prog));gl.useProgram(prog);
 const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);const ap=gl.getAttribLocation(prog,'p');gl.enableVertexAttribArray(ap);gl.vertexAttribPointer(ap,2,gl.FLOAT,false,0,0);
-const ur=gl.getUniformLocation(prog,'r'),ut=gl.getUniformLocation(prog,'t'),useed=gl.getUniformLocation(prog,'seed'),ul=gl.getUniformLocation(prog,'lowE'),um=gl.getUniformLocation(prog,'midE'),uh=gl.getUniformLocation(prog,'highE'),ue=gl.getUniformLocation(prog,'energy');
+const ur=gl.getUniformLocation(prog,'r'),ut=gl.getUniformLocation(prog,'t'),useed=gl.getUniformLocation(prog,'seed'),ul=gl.getUniformLocation(prog,'lowE'),um=gl.getUniformLocation(prog,'midE'),uh=gl.getUniformLocation(prog,'highE'),ue=gl.getUniformLocation(prog,'energy'),umode=gl.getUniformLocation(prog,'mode'),umblend=gl.getUniformLocation(prog,'modeBlend');
 let start=performance.now(), seed=Math.random()*99, smLow=.28,smMid=.25,smHigh=.20,smEnergy=.25;
 
 const audio=document.getElementById('audio'), file=document.getElementById('file'), play=document.getElementById('play'), name=document.getElementById('name');
@@ -209,13 +236,18 @@ file.addEventListener('change',()=>{const f=file.files&&file.files[0];if(!f)retu
 play.addEventListener('click',async()=>{ensureAudio();if(ctx.state==='suspended')await ctx.resume();if(audio.paused){await audio.play();play.textContent='PAUSE';}else{audio.pause();play.textContent='PLAY';}});audio.addEventListener('ended',()=>play.textContent='PLAY');
 document.getElementById('regen').addEventListener('click',()=>{seed=Math.random()*99;start=performance.now();showUI();});
 document.getElementById('fs').addEventListener('click',async()=>{try{if(!document.fullscreenElement){await document.documentElement.requestFullscreen?.();}else{await document.exitFullscreen?.();}}catch(e){}});
+const freeBtn=document.getElementById('free'), modeBtn=document.getElementById('mode');
+function updateModeUI(){freeBtn.classList.toggle('active', freeDrift); freeBtn.textContent = freeDrift ? 'FREE DRIFT' : 'MANUAL'; modeBtn.textContent='MODE: '+MODE_NAMES[manualMode];}
+freeBtn.addEventListener('click',()=>{freeDrift=!freeDrift; updateModeUI(); showUI();});
+modeBtn.addEventListener('click',()=>{manualMode=(manualMode+1)%MODE_NAMES.length; freeDrift=false; updateModeUI(); showUI();});
+updateModeUI();
 
 const ui=document.getElementById('ui'),tag=document.getElementById('sceneTag');let hideTimer=null;
 function showUI(){ui.classList.remove('hidden');clearTimeout(hideTimer);hideTimer=setTimeout(()=>ui.classList.add('hidden'),9000);}function toggleUI(){ui.classList.toggle('hidden');if(!ui.classList.contains('hidden'))showUI();}
 let lastTap=0;document.addEventListener('pointerup',e=>{if(e.target.closest&&e.target.closest('#ui'))return;const now=performance.now();if(now-lastTap<340)toggleUI();lastTap=now;});showUI();
-const sceneNames=['COSMIC FLOW','TARANTULA DRIFT','ORION TUNNEL','CAT\'S PAW MIST','PROTOSTAR RUN','SUBSPACE GLOW'];let lastScene=-1;
+let lastLabel='';
 function resize(){const dpr=Math.min(window.devicePixelRatio||1,1.25);const scale=innerWidth<700?.82:.92;const w=Math.max(2,Math.floor(innerWidth*dpr*scale)),h=Math.max(2,Math.floor(innerHeight*dpr*scale));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}}
-function frame(now){resize();analyse();const tt=(now-start)/1000;const sc=Math.floor(tt/30)%6;if(sc!==lastScene){lastScene=sc;tag.textContent='D R I F T · SUBSPACE · '+sceneNames[sc];tag.style.opacity='1';setTimeout(()=>tag.style.opacity='.18',3800);}gl.uniform2f(ur,canvas.width,canvas.height);gl.uniform1f(ut,tt);gl.uniform1f(useed,seed);gl.uniform1f(ul,smLow);gl.uniform1f(um,smMid);gl.uniform1f(uh,smHigh);gl.uniform1f(ue,smEnergy);gl.drawArrays(gl.TRIANGLES,0,6);requestAnimationFrame(frame);}requestAnimationFrame(frame);
+function frame(now){resize();analyse();const tt=(now-start)/1000;let mode, blend, label; if(freeDrift){const cyc=tt/30; mode=Math.floor(cyc)%MODE_NAMES.length; blend=Math.max(0,Math.min(1,(cyc-Math.floor(cyc)-0.72)/0.28)); label='FREE DRIFT · '+MODE_NAMES[mode];} else {mode=manualMode; blend=0; label=MODE_NAMES[mode];} if(label!==lastLabel){lastLabel=label; tag.textContent='D R I F T · SUBSPACE · '+label; tag.style.opacity='1'; setTimeout(()=>tag.style.opacity='.18',3800);} gl.uniform2f(ur,canvas.width,canvas.height);gl.uniform1f(ut,tt);gl.uniform1f(useed,seed);gl.uniform1f(ul,smLow);gl.uniform1f(um,smMid);gl.uniform1f(uh,smHigh);gl.uniform1f(ue,smEnergy);gl.uniform1f(umode,mode);gl.uniform1f(umblend,blend);gl.drawArrays(gl.TRIANGLES,0,6);requestAnimationFrame(frame);}requestAnimationFrame(frame);
 })();
 </script>
 </body>
