@@ -3,191 +3,134 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
-<meta name="theme-color" content="#04070f" />
-<title>D R I F T: SUBSPACE — Test 06</title>
+<meta name="theme-color" content="#02040a" />
+<title>D R I F T: SUBSPACE — 1.0 Prototype</title>
 <style>
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#04070f;color:#f4f6ff;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;touch-action:none}
-canvas{position:fixed;inset:0;width:100%;height:100%;display:block;background:#04070f}
-#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:22px;pointer-events:none}
-#panel{width:min(860px,92vw);border-radius:28px;padding:24px 24px 20px;background:rgba(20,26,44,.40);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 18px 50px rgba(0,0,0,.32);pointer-events:auto;transition:opacity .7s ease, transform .7s ease}
+:root{--glass:rgba(7,10,19,.62);--line:rgba(255,255,255,.13);--txt:#f2f5ff;--muted:rgba(242,245,255,.62)}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02040a;color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;touch-action:none}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block;background:#02040a}
+#sceneTag{position:fixed;left:14px;bottom:12px;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(242,245,255,.58);text-shadow:0 1px 8px #000;pointer-events:none;transition:opacity 1.2s ease}
+#menuBtn{position:fixed;right:14px;top:max(14px,env(safe-area-inset-top));z-index:4;border:1px solid var(--line);background:rgba(7,10,19,.44);color:white;border-radius:14px;width:44px;height:44px;font-size:20px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+#panelWrap{position:fixed;inset:0;z-index:5;display:flex;align-items:flex-end;justify-content:center;padding:16px;pointer-events:none}
+#panel{pointer-events:auto;width:min(560px,calc(100vw - 24px));max-height:min(72vh,620px);overflow:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:22px;background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 18px 54px rgba(0,0,0,.34);padding:16px;transition:opacity .55s ease,transform .55s ease}
 #panel.hidden{opacity:0;transform:translateY(12px);pointer-events:none}
-#close{position:absolute;right:18px;top:18px;width:46px;height:46px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.08);color:#fff;font-size:18px;font-weight:700}
-.head{position:relative;padding-right:60px}.logo{font-size:22px;letter-spacing:.34em;font-weight:700}.subtitle{margin-top:6px;font-size:12px;letter-spacing:.05em;color:rgba(255,255,255,.82)}
-.blurb{margin-top:20px;max-width:760px;font-size:13px;line-height:1.5;color:rgba(255,255,255,.88)}
-button, .pick, select{appearance:none;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:#f3f5ff;border-radius:18px;height:58px;padding:0 18px;font:700 13px/58px -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;cursor:pointer}
-#chooseMusic{width:100%;margin-top:18px;background:rgba(255,255,255,.06)}
-.meta{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-top:14px;color:rgba(255,255,255,.94)}
-.trackTitle{font-size:16px;font-weight:600;line-height:1.2}.trackSub{font-size:12px;color:rgba(255,255,255,.62);margin-top:4px;letter-spacing:.06em;text-transform:uppercase}.rightTag{font-size:12px;color:rgba(255,255,255,.78);letter-spacing:.14em;text-transform:uppercase;margin-top:3px}
-.controlsRow{display:grid;grid-template-columns:72px 1fr 72px 130px 140px 130px;gap:12px;margin-top:18px;align-items:center}
-.navBtn,.tinyBtn,.playBtn{height:58px;border-radius:18px}.playBtn{display:flex;justify-content:center;align-items:center;font-size:30px;letter-spacing:0;background:rgba(255,255,255,.10)}
-.navBtn,.tinyBtn{font-size:28px;letter-spacing:0}.tinyBtn{font-size:18px}.stopIcon{font-size:22px}
-.progressWrap{margin-top:14px}.timeRow{display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.84);margin-bottom:6px}
-input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:rgba(255,255,255,.18);outline:none}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:none;box-shadow:0 0 0 2px rgba(0,0,0,.12)}
-input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:none}
-.section{margin-top:22px;padding-top:16px;border-top:1px solid rgba(255,255,255,.12)}
-.sectionTitle{font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#fff;margin-bottom:16px}
-.settings{display:grid;grid-template-columns:230px 1fr;row-gap:16px;column-gap:18px;align-items:center}.label{font-size:13px;font-weight:600;color:rgba(255,255,255,.92)}
-select{height:48px;line-height:48px;border-radius:14px;padding:0 14px;font-size:13px;letter-spacing:.12em;min-width:260px}
-.footer{display:flex;justify-content:space-between;gap:18px;align-items:flex-end;margin-top:18px;font-size:13px;color:rgba(255,255,255,.88)}
-.footHint{font-size:11px;line-height:1.45;color:rgba(255,255,255,.64);text-align:center;margin-top:14px}
-#sceneTag{position:fixed;left:16px;bottom:14px;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(235,241,255,.66);text-shadow:0 1px 8px #000;transition:opacity 1.5s ease;pointer-events:none}
-.file{display:none}
-@media (max-width:900px){.controlsRow{grid-template-columns:64px 1fr 64px 1fr 1fr 1fr}.settings{grid-template-columns:1fr}.meta{flex-direction:column}}
-@media (max-width:720px){#panel{padding:18px 16px 16px;border-radius:22px}.logo{font-size:18px}.blurb{font-size:12px}.controlsRow{grid-template-columns:1fr 1fr 1fr;grid-auto-rows:52px}.controlsRow > *{height:52px;line-height:52px}.playBtn{font-size:26px}.navBtn,.tinyBtn{font-size:22px}.settings{grid-template-columns:1fr}.rightTag{display:none}}
+.head{display:flex;align-items:flex-start;gap:12px}.headText{flex:1}.brand{font-size:14px;font-weight:700;letter-spacing:.30em}.sub{margin-top:4px;font-size:10px;color:var(--muted);letter-spacing:.09em}.close{width:38px;height:38px;border-radius:12px}
+.lede{font-size:11px;line-height:1.45;color:rgba(242,245,255,.76);margin:11px 0 12px}
+button,.pick,select{appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.065);color:var(--txt);border-radius:14px;height:42px;padding:0 13px;font:650 10px/42px -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;letter-spacing:.10em;text-transform:uppercase}
+.pick{display:flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box}.file{display:none}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:9px}.row button{flex:1;min-width:88px}.play{font-size:16px;letter-spacing:0}.free.active{background:rgba(255,255,255,.16)}
+.track{font-size:11px;color:var(--muted);margin-top:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.section{margin-top:13px;padding-top:12px;border-top:1px solid rgba(255,255,255,.10)}.sectionTitle{font-size:10px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;color:rgba(255,255,255,.88)}
+.setting{display:grid;grid-template-columns:116px 1fr;gap:10px;align-items:center;margin:9px 0}.setting label{font-size:10px;color:rgba(255,255,255,.78)}
+select{width:100%;height:40px;line-height:40px;padding:0 10px;text-transform:none;letter-spacing:.02em}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:999px;background:rgba(255,255,255,.17);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:#fff;border:0}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:0}
+.status{display:flex;justify-content:space-between;gap:12px;font-size:10px;color:rgba(255,255,255,.72);margin-top:10px}.modeName{text-transform:uppercase;letter-spacing:.12em;font-weight:700}
+.hint{text-align:center;font-size:9px;color:rgba(255,255,255,.48);margin-top:10px;line-height:1.4}
+@media (orientation:landscape) and (max-height:600px){#panelWrap{align-items:center;padding:8px}#panel{max-height:82vh;width:min(620px,70vw);border-radius:18px;padding:12px}.lede{display:none}.section{margin-top:10px;padding-top:9px}.setting{margin:6px 0}.row{margin-top:7px}.hint{display:none}}
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
-<div id="sceneTag">D R I F T · SUBSPACE · FREE DRIFT</div>
-<div id="wrap">
-  <div id="panel">
-    <div class="head">
-      <button id="close" title="Hide">×</button>
-      <div class="logo">D R I F T</div>
-      <div class="subtitle">Generative Subspace Visualizer</div>
-      <div class="blurb">Play a local track, choose music from your device, or use Free Drift with no music. Your own files stay local; nothing is uploaded.</div>
-      <label class="pick" id="chooseMusic" for="file">Choose Music</label>
-      <input class="file" id="file" type="file" accept="audio/*,.mp3,.wav,.m4a,.aac,.flac,.ogg" />
-    </div>
-
-    <div class="meta">
-      <div>
-        <div class="trackTitle" id="trackTitle">SUBSPACE DRIFT — Chris Weeks</div>
-        <div class="trackSub" id="trackSub">Default ambient test mode</div>
-      </div>
-      <div class="rightTag" id="modeBadge">FREE DRIFT</div>
-    </div>
-
-    <div class="controlsRow">
-      <button class="navBtn" id="prev">‹</button>
-      <button class="playBtn" id="play" disabled>▶</button>
-      <button class="navBtn" id="next">›</button>
-      <button class="tinyBtn" id="regen">↻</button>
-      <button class="tinyBtn" id="free">Free Drift</button>
-      <button class="tinyBtn stopIcon" id="stop">□</button>
-    </div>
-
-    <div class="progressWrap">
-      <div class="timeRow"><span id="timeNow">0:00</span><span id="timeTotal">0:00</span></div>
-      <input id="seek" type="range" min="0" max="1" step="0.001" value="0" />
-    </div>
-
-    <div class="section">
-      <div class="sectionTitle">Visual Settings</div>
-      <div class="settings">
-        <div class="label">Scene mode</div>
-        <div><select id="sceneMode"></select></div>
-
-        <div class="label">Visual intensity</div>
-        <div><input id="intensity" type="range" min="0" max="1" step="0.01" value="0.68" /></div>
-
-        <div class="label">Forward motion</div>
-        <div><input id="motion" type="range" min="0" max="1" step="0.01" value="0.54" /></div>
-
-        <div class="label">Grain</div>
-        <div><input id="grain" type="range" min="0" max="1" step="0.01" value="0.50" /></div>
-      </div>
-    </div>
-
-    <div class="footer">
-      <div id="statusText">Free Drift ready — press play, or just let it run.</div>
-      <div id="currentModeText" style="font-weight:700;letter-spacing:.12em;text-transform:uppercase">COSMIC FLOW</div>
-    </div>
-    <div class="footHint">Double tap the visual to toggle controls. Use landscape mode on your device for the best experience.</div>
+<div id="sceneTag">D R I F T · SUBSPACE · DEEP SPACE</div>
+<button id="menuBtn" aria-label="Open controls">☰</button>
+<div id="panelWrap"><div id="panel">
+  <div class="head"><div class="headText"><div class="brand">D R I F T: SUBSPACE</div><div class="sub">1.0 PROTOTYPE · AMBIENT DRONE DRIFT</div></div><button id="close" class="close">×</button></div>
+  <div class="lede">A generative deep-space environment for ambient and drone music. Eight distinct scene grammars share the same drifting engine but use different geometry, light, dust and motion.</div>
+  <label class="pick" for="file">Choose Music</label><input id="file" class="file" type="file" accept="audio/*,.mp3,.wav,.m4a,.aac,.flac,.ogg" />
+  <div class="row"><button id="play" class="play" disabled>▶</button><button id="free" class="free active">Free Drift</button><button id="reseed">Reseed</button><button id="full">Full</button></div>
+  <div id="trackName" class="track">No audio loaded — visual runs autonomously</div>
+  <div class="section">
+    <div class="sectionTitle">Visual Settings</div>
+    <div class="setting"><label>Scene mode</label><select id="sceneMode"></select></div>
+    <div class="setting"><label>Visual intensity</label><input id="intensity" type="range" min="0" max="1" step="0.01" value="0.70" /></div>
+    <div class="setting"><label>Drift motion</label><input id="motion" type="range" min="0" max="1" step="0.01" value="0.56" /></div>
+    <div class="setting"><label>Microdust</label><input id="dust" type="range" min="0" max="1" step="0.01" value="0.48" /></div>
+    <div class="setting"><label>Contrast</label><input id="contrast" type="range" min="0" max="1" step="0.01" value="0.66" /></div>
   </div>
-</div>
+  <div class="status"><span id="status">Free Drift ready</span><span id="modeText" class="modeName">DEEP SPACE</span></div>
+  <div class="hint">Double-tap the visual to toggle controls. Free Drift changes environments every 30 seconds.</div>
+</div></div>
 <audio id="audio" preload="metadata"></audio>
 <script>
 (() => {
-const MODE_NAMES=['AUTO','COSMIC FLOW','TARANTULA VEIL','ORION HOLLOW','CAT\'S PAW MIST','PROTOSTAR RUN','SUBSPACE GLOW','VOID APPROACH','BLUE EMBER'];
-const sceneModeSelect=document.getElementById('sceneMode');
-MODE_NAMES.forEach((n,i)=>{const o=document.createElement('option');o.value=i;o.textContent=n;sceneModeSelect.appendChild(o);});
-sceneModeSelect.value='0';
+const NAMES=['DEEP SPACE','CAVERN','FILAMENT','VEIL','PILLARS','RING','REMNANT','PROTO-PLANET'];
+const select=document.getElementById('sceneMode');
+select.appendChild(new Option('AUTO / FREE DRIFT','auto'));
+NAMES.forEach((n,i)=>select.appendChild(new Option(n,String(i))));
 
 const canvas=document.getElementById('c');
 const gl=canvas.getContext('webgl',{alpha:false,antialias:false,powerPreference:'high-performance'})||canvas.getContext('experimental-webgl');
-if(!gl){document.body.innerHTML='<div style="padding:24px;color:white">WebGL is not available on this device.</div>';return;}
-
-const vs=`attribute vec2 p; varying vec2 v; void main(){v=p*.5+.5;gl_Position=vec4(p,0.,1.);}`;
+if(!gl){document.body.innerHTML='<div style="color:white;padding:24px">WebGL unavailable.</div>';return;}
+const vs=`attribute vec2 p;varying vec2 v;void main(){v=p*.5+.5;gl_Position=vec4(p,0.,1.);}`;
 const fs=`precision mediump float;
-varying vec2 v; uniform vec2 r; uniform float t; uniform float seed; uniform float lowE; uniform float midE; uniform float highE; uniform float energy; uniform float mode; uniform float modeBlend; uniform float intensity; uniform float motion; uniform float grain;
-float hash21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);} 
-float noise2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);float a=hash21(i),b=hash21(i+vec2(1.,0.)),c=hash21(i+vec2(0.,1.)),d=hash21(i+vec2(1.,1.));return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);} 
-float fbm(vec2 p){float s=0.,a=.5;for(int i=0;i<6;i++){s+=a*noise2(p);p=p*2.03+vec2(17.1,9.2);a*=.52;}return s;}
-float ridge(vec2 p){float s=0.,a=.5;for(int i=0;i<5;i++){float v=abs(noise2(p)*2.0-1.0);s += a*(1.0-v);p=p*2.07+vec2(12.4,-6.8);a*=.55;}return s;}
-mat2 rot(float a){float s=sin(a), c=cos(a); return mat2(c,-s,s,c);} 
-vec3 basePal(float i){ if(i<0.5) return vec3(0.05,0.08,0.18); if(i<1.5) return vec3(0.17,0.06,0.14); if(i<2.5) return vec3(0.07,0.12,0.23); if(i<3.5) return vec3(0.11,0.09,0.06); if(i<4.5) return vec3(0.15,0.08,0.05); if(i<5.5) return vec3(0.05,0.10,0.17); if(i<6.5) return vec3(0.03,0.05,0.10); return vec3(0.05,0.10,0.15);} 
-vec3 glowPal(float i){ if(i<0.5) return vec3(0.56,0.35,0.14); if(i<1.5) return vec3(0.70,0.26,0.56); if(i<2.5) return vec3(0.16,0.37,0.64); if(i<3.5) return vec3(0.82,0.76,0.57); if(i<4.5) return vec3(0.74,0.28,0.14); if(i<5.5) return vec3(0.46,0.66,0.90); if(i<6.5) return vec3(0.18,0.24,0.42); return vec3(0.32,0.55,0.84);} 
-vec3 accentPal(float i){ if(i<0.5) return vec3(0.92,0.90,0.82); if(i<1.5) return vec3(0.92,0.98,0.95); if(i<2.5) return vec3(0.84,0.94,1.00); if(i<3.5) return vec3(1.00,0.68,0.24); if(i<4.5) return vec3(0.98,0.72,0.34); if(i<5.5) return vec3(0.94,0.96,1.00); if(i<6.5) return vec3(0.62,0.72,0.95); return vec3(0.98,0.88,0.66);} 
-float speedMul(float i){ if(i<0.5) return 1.00; if(i<1.5) return 1.06; if(i<2.5) return 0.94; if(i<3.5) return 0.88; if(i<4.5) return 1.14; if(i<5.5) return 0.92; if(i<6.5) return 1.20; return 1.02; } 
-float densityMul(float i){ if(i<0.5) return 1.00; if(i<1.5) return 1.04; if(i<2.5) return 0.92; if(i<3.5) return 1.10; if(i<4.5) return 1.06; if(i<5.5) return 0.94; if(i<6.5) return 0.82; return 0.90; } 
-float rollAmt(float i){ if(i<0.5) return 0.10; if(i<1.5) return 0.16; if(i<2.5) return 0.20; if(i<3.5) return 0.08; if(i<4.5) return 0.13; if(i<5.5) return 0.11; if(i<6.5) return 0.24; return 0.18; } 
-float orbitAmt(float i){ if(i<0.5) return 0.16; if(i<1.5) return 0.22; if(i<2.5) return 0.14; if(i<3.5) return 0.12; if(i<4.5) return 0.18; if(i<5.5) return 0.16; if(i<6.5) return 0.10; return 0.20; } 
+varying vec2 v;uniform vec2 r;uniform float t,seed,lowE,midE,highE,energy,mode,blend,intensity,motion,dust,contrast;
+float h(vec2 p){p=fract(p*vec2(127.1,311.7));p+=dot(p,p+34.3);return fract(p.x*p.y);} 
+float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);float a=h(i),b=h(i+vec2(1.,0.)),c=h(i+vec2(0.,1.)),d=h(i+vec2(1.,1.));return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);} 
+float fbm(vec2 p){float s=0.,a=.5;for(int i=0;i<6;i++){s+=a*n(p);p=p*2.04+vec2(19.1,7.7);a*=.52;}return s;} 
+float rid(vec2 p){float s=0.,a=.5;for(int i=0;i<5;i++){float z=abs(n(p)*2.-1.);s+=a*(1.-z);p=p*2.07+vec2(8.2,-5.7);a*=.55;}return s;} 
+mat2 R(float a){float s=sin(a),c=cos(a);return mat2(c,-s,s,c);} 
+vec3 mixPal(float m){
+ if(m<.5)return vec3(.08,.12,.25); if(m<1.5)return vec3(.82,.38,.16); if(m<2.5)return vec3(.75,.18,.54); if(m<3.5)return vec3(.18,.48,.67); if(m<4.5)return vec3(.62,.34,.14); if(m<5.5)return vec3(.17,.56,.70); if(m<6.5)return vec3(.48,.18,.58); return vec3(.74,.36,.13);}
+vec3 accPal(float m){
+ if(m<.5)return vec3(.76,.86,1.); if(m<1.5)return vec3(1.,.78,.42); if(m<2.5)return vec3(.90,.86,1.); if(m<3.5)return vec3(.94,.45,.70); if(m<4.5)return vec3(.96,.71,.38); if(m<5.5)return vec3(.66,.96,.92); if(m<6.5)return vec3(.92,.68,.98); return vec3(1.,.78,.38);}
+vec3 darkPal(float m){
+ if(m<.5)return vec3(.01,.018,.045); if(m<1.5)return vec3(.025,.012,.012); if(m<2.5)return vec3(.022,.008,.020); if(m<3.5)return vec3(.006,.018,.028); if(m<4.5)return vec3(.018,.012,.008); if(m<5.5)return vec3(.006,.024,.032); if(m<6.5)return vec3(.020,.007,.022); return vec3(.018,.010,.006);}
+
+float cavern(vec2 p){float wall=rid(p*.55)+fbm(p*.20)*.45;float hole=1.-smoothstep(.18,.72,length(p*vec2(.72,1.08)));return smoothstep(.55,1.05,wall-hole*.72);} 
+float filament(vec2 p){float a=rid(p*1.25);float b=rid(R(.45)*p*2.0+vec2(3.,-4.));return smoothstep(.63,1.16,a*.70+b*.38);} 
+float veil(vec2 p){float a=fbm(p*.65+vec2(t*.008,-t*.004));float b=fbm(R(.35)*p*1.5+vec2(-4.,3.));return smoothstep(.48,.82,a*.7+b*.3);} 
+float pillars(vec2 p){vec2 q=p;q.x+=.22*sin(q.y*2.2+t*.01);float base=fbm(vec2(q.x*.70,q.y*.33));float edge=rid(vec2(q.x*1.5,q.y*.55));return smoothstep(.52,.92,base*.70+edge*.38);} 
+float ringF(vec2 p){float rr=length(p);float ring=exp(-pow((rr-.55)*5.8,2.));float knots=rid(vec2(atan(p.y,p.x)*1.2,rr*5.0));return clamp(ring*(.55+.75*knots),0.,1.);} 
+float remnant(vec2 p){float a=rid(R(.22)*p*1.1);float b=rid(R(-.55)*p*1.8+vec2(2.,3.));float c=fbm(p*.55);return smoothstep(.56,1.14,a*.48+b*.36+c*.20);} 
+float proto(vec2 p){vec2 q=R(t*.015)*p;float rr=length(q);float disk=exp(-pow(q.y*7.0,2.))*smoothstep(1.2,.10,rr);float lanes=rid(vec2(atan(q.y,q.x)*1.5,rr*4.0)+vec2(t*.015,0.));float core=smoothstep(.23,0.,rr);return clamp(disk*(.45+.70*lanes)+core*.85,0.,1.);} 
+
 void main(){
-  vec2 uv=v; float asp=r.x/r.y; vec2 q=(uv-.5)*vec2(asp,1.0);
-  float mA=mode, mB=mod(mode+1.0,8.0); vec3 c0=mix(basePal(mA),basePal(mB),modeBlend); vec3 c1=mix(glowPal(mA),glowPal(mB),modeBlend); vec3 c2=mix(accentPal(mA),accentPal(mB),modeBlend);
-  float spd=mix(speedMul(mA),speedMul(mB),modeBlend) * mix(0.65,1.45,motion);
-  float densMul=mix(densityMul(mA),densityMul(mB),modeBlend) * mix(0.80,1.25,intensity);
-  float rollMag=mix(rollAmt(mA),rollAmt(mB),modeBlend); float orbitMag=mix(orbitAmt(mA),orbitAmt(mB),modeBlend);
-  float ang=sin(t*0.035 + seed*1.9)*rollMag + sin(t*0.017 + seed*3.7)*rollMag*0.7;
-  vec2 qq=rot(ang)*q; qq += vec2(0.0, sin(t*0.026 + seed*2.0)*0.035);
-  vec2 forward=vec2(0.0,-t*(0.040 + 0.012*midE) * spd); vec2 orbit=vec2(cos(t*0.042 + seed*1.1), sin(t*0.038 + seed*2.7))*orbitMag; vec2 sway=vec2(0.08*sin(t*0.060 + seed*2.3), 0.05*cos(t*0.049 + seed*1.7)); vec2 cam=forward+orbit+sway;
-  vec3 col=vec3(0.004,0.007,0.017) + c0*0.040; float fogA=0.0;
-  for(int i=0;i<10;i++){
-    float fi=float(i); float z=fi/9.0; float travel=fract(z + t*(0.022 + 0.010*midE)*(0.62 + z*0.56)*spd + seed*0.17); float depth=mix(5.3,0.15,travel); float expand=mix(0.82,3.15,pow(1.0-travel,1.55)); vec2 p=qq*depth*expand + cam*(0.34 + z*1.95);
-    float turn=ang*(0.35 + z*0.6) + sin(t*0.028 + z*3.8 + seed)*0.08; p=rot(turn)*p; vec2 spiral=vec2(cos(t*0.06 + z*7.0 + seed*2.0), sin(t*0.05 + z*6.0 + seed*1.3))*(0.18 + 0.24*(1.0-travel)); p += spiral + vec2(travel*0.65,-travel*0.55) + vec2(seed*1.5,-seed*1.2);
-    float broad=fbm(p*0.24 + vec2(6.0,-4.0)); float soft=fbm(p*0.60 + vec2(-3.0,7.3) - t*0.004); float fine=fbm(p*1.10 + vec2(2.0,-5.0) + t*0.004); float fil=ridge(p*0.82 + vec2(1.0,7.0) - t*0.005); float cav=fbm(p*0.16 + vec2(18.0,2.0));
-    float density=(broad*0.46 + soft*0.25 + fine*0.10 + fil*0.17) * densMul; density += (lowE-0.22)*0.12; density -= smoothstep(0.42,0.82,cav)*0.17;
-    float body=smoothstep(0.52,0.82,density); float filament=smoothstep(0.46,0.88,fil)*smoothstep(0.38,0.92,broad); float alpha=body*mix(0.028,0.120,pow(1.0-travel,1.34)); alpha*=smoothstep(0.0,0.05,travel)*smoothstep(1.0,0.64,travel); alpha+=filament*0.010*(0.35+highE);
-    float inner=fbm(p*1.42 + vec2(5.0,-7.0)); float heat=ridge(p*1.06 + vec2(-8.0,3.0)); vec3 local=mix(c0,c1,clamp(inner*0.82 + broad*0.30,0.0,1.0)); local=mix(local,c2,smoothstep(0.72,0.96,heat)*(0.14 + 0.16*highE)); local*=0.76;
-    col += (1.0-fogA)*local*alpha; fogA += (1.0-fogA)*alpha*0.88;
-  }
-  vec2 gp1=rot(ang*0.7)*(qq - vec2(0.16*sin(t*0.013 + seed*4.0), 0.11*cos(t*0.011))); vec2 gp2=rot(-ang*0.5)*(qq + vec2(0.13*cos(t*0.010 + seed*2.2), 0.10*sin(t*0.012 + 1.1))); float g1=smoothstep(0.95,0.10,length(gp1))*smoothstep(0.46,0.88,fbm(gp1*0.92 + t*0.006 + seed)); float g2=smoothstep(0.86,0.08,length(gp2))*smoothstep(0.48,0.90,fbm(gp2*1.24 - t*0.004 + seed*1.8)); col += c1*g1*(0.035 + 0.035*highE); col += c2*g2*(0.018 + 0.020*highE);
-  vec2 dustBase=qq*vec2(6.0,7.0); vec2 df1=cam*3.4 + vec2(t*0.18,-t*0.30); vec2 df2=rot(ang*1.2)*(cam*4.2 + vec2(-t*0.34,t*0.22)); vec2 df3=rot(-ang*0.9)*(cam*5.4 + vec2(t*0.28,t*0.18));
-  float mist1=fbm(dustBase*0.55 + df1); float mist2=fbm(dustBase*0.95 + df2 + vec2(6.0,-2.0)); float mist3=fbm(dustBase*1.70 + df3 + vec2(-4.0,6.0)); float mist4=ridge(dustBase*1.15 + df2*0.65 - df1*0.35); float mist=mist1*0.36 + mist2*0.26 + mist3*0.18 + mist4*0.20; mist=smoothstep(0.52,0.84,mist); mist *= (0.03 + fogA*0.14 + highE*0.04);
-  col += mix(c1,c2,0.28) * mist * (0.18 + 0.10*grain);
-  vec2 mp1=qq*vec2(28.0,34.0) + df1*10.0; vec2 mp2=rot(ang*1.5)*(qq*vec2(42.0,48.0) + df2*12.0); vec2 mp3=rot(-ang)*(qq*vec2(62.0,68.0) + df3*15.0); float micro=noise2(mp1)*0.45 + noise2(mp2)*0.33 + noise2(mp3)*0.22; micro=smoothstep(0.58,0.83,micro); float microFlick=0.80 + 0.20*sin(t*1.2 + qq.x*7.0 + qq.y*4.0); col += vec3(1.0)*micro*microFlick*(0.006 + 0.022*grain)*(0.12 + fogA*0.60);
-  vec2 sp=rot(ang*0.7)*(qq*9.0 + cam*4.0); float speckCell=hash21(floor(sp*9.0 + seed*43.0)); float speck=smoothstep(0.12,0.0,length(fract(sp*9.0 + seed*43.0)-0.5))*step(0.9983,speckCell); speck *= (0.010 + 0.015*grain) * (0.14 + 0.40*fogA); col += c2*speck;
-  float voidN=fbm(qq*0.28 + cam*0.25 + vec2(seed*4.0,-seed*3.0)); float voidMask=smoothstep(0.58,0.86,voidN)*(0.10 + 0.10*lowE); col *= 1.0 - voidMask*0.44;
-  col *= 0.98 + 0.10*energy + 0.04*highE; col += vec3(0.010,0.012,0.017); col=pow(max(col,vec3(0.0)), vec3(0.95)); col=clamp(col,0.0,1.0); gl_FragColor=vec4(col,1.0); }`;
-function shader(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s;}
-const prog=gl.createProgram();gl.attachShader(prog,shader(gl.VERTEX_SHADER,vs));gl.attachShader(prog,shader(gl.FRAGMENT_SHADER,fs));gl.linkProgram(prog);if(!gl.getProgramParameter(prog,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(prog));gl.useProgram(prog);
+ vec2 uv=v;float asp=r.x/r.y;vec2 q=(uv-.5)*vec2(asp,1.0);
+ float m0=mode,m1=mod(mode+1.,8.);vec3 bg=mix(darkPal(m0),darkPal(m1),blend);vec3 pc=mix(mixPal(m0),mixPal(m1),blend);vec3 ac=mix(accPal(m0),accPal(m1),blend);
+ float mot=mix(.55,1.35,motion);float roll=.10*sin(t*.021+seed*2.)+.07*sin(t*.011+seed*5.);vec2 view=R(roll)*q;
+ vec2 path=vec2(.18*sin(t*.017+seed),-.045*t*mot+.12*sin(t*.012+seed*2.));path+=vec2(.11*cos(t*.009+seed*4.),.10*sin(t*.015+seed*3.));
+ vec3 col=bg;float A=0.;
+ // depth stack
+ for(int i=0;i<11;i++){
+   float fi=float(i),z=fi/10.;float tr=fract(z+t*(.012+.009*midE)*mot+seed*.17);float dep=mix(4.8,.20,tr);vec2 p=view*dep+path*(.45+z*1.65);p+=vec2(tr*.55,-tr*.33);
+   float f=0.;
+   if(m0<.5) f=veil(p*.55)*.20; else if(m0<1.5) f=cavern(p); else if(m0<2.5) f=filament(p); else if(m0<3.5) f=veil(p); else if(m0<4.5) f=pillars(p); else if(m0<5.5) f=ringF(p); else if(m0<6.5) f=remnant(p); else f=proto(p);
+   if(blend>.0){float g=0.;if(m1<.5)g=veil(p*.55)*.20;else if(m1<1.5)g=cavern(p);else if(m1<2.5)g=filament(p);else if(m1<3.5)g=veil(p);else if(m1<4.5)g=pillars(p);else if(m1<5.5)g=ringF(p);else if(m1<6.5)g=remnant(p);else g=proto(p);f=mix(f,g,blend);}
+   float local=fbm(p*1.45+vec2(3.,-7.));float edge=rid(p*.9+vec2(-4.,5.));float alpha=f*mix(.015,.115,pow(1.-tr,1.3))*mix(.72,1.25,intensity);alpha*=smoothstep(0.,.06,tr)*smoothstep(1.,.68,tr);
+   vec3 lc=mix(pc,ac,smoothstep(.55,.95,edge));lc*=.52+.70*local;col+=(1.-A)*lc*alpha;A+=(1.-A)*alpha*.90;
+ }
+ // scene-specific embellishment, genuinely different
+ if(m0>4.5&&m0<5.5){float rr=length(view);col+=ac*exp(-pow((rr-.55)*8.,2.))*.10;col*=1.-smoothstep(.18,.0,rr)*.18;}
+ if(m0>6.5){float core=smoothstep(.18,.0,length(view));col+=ac*core*.16;float disk=exp(-pow(view.y*8.,2.))*smoothstep(1.0,.08,length(view));col+=pc*disk*.06;}
+ if(m0>1.5&&m0<2.5){float streak=rid(R(-.4)*view*3.2+vec2(t*.03,-t*.012));col+=ac*smoothstep(.78,.96,streak)*.035;}
+ if(m0>3.5&&m0<4.5){float towers=smoothstep(.65,.88,fbm(vec2(view.x*1.3,view.y*.36)+vec2(seed,0.)));col+=pc*towers*.035;}
+ // microdust field: turbulent mist, not a dot grid
+ vec2 d1=R(roll*.8)*(view*vec2(8.,9.)+path*7.+vec2(t*.20,-t*.31));vec2 d2=R(-roll)*(view*vec2(14.,16.)+path*10.+vec2(-t*.28,t*.19));float mm=fbm(d1*.35)*.55+fbm(d2*.28+vec2(7.,-3.))*.45;mm=smoothstep(.54,.79,mm);col+=mix(pc,ac,.35)*mm*(.018+.075*dust)*(.25+A*.9);
+ // finer sparkling dust, sparse and irregular
+ float micro=n(view*vec2(110.,130.)+path*31.+vec2(t*.6,-t*.4));micro=smoothstep(.77,.96,micro);col+=vec3(1.)*micro*(.002+.018*dust)*(A*.6+.12);
+ // occasional dim stargrain, mostly in deep space
+ float stars=smoothstep(.9988,1.,h(floor((uv+vec2(t*.0002,0.))*vec2(210.,270.)+seed*19.)));float deepMix=1.-smoothstep(.1,.8,A);col+=vec3(.72,.80,1.)*stars*.045*deepMix;
+ // contrast + black floor
+ col*=.95+.12*energy+.04*highE;col=mix(col,pow(max(col,vec3(0.)),vec3(.78)),contrast*.42);col=clamp(col,0.,1.);gl_FragColor=vec4(col,1.);
+}`;
+function sh(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s;}
+const prog=gl.createProgram();gl.attachShader(prog,sh(gl.VERTEX_SHADER,vs));gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(prog);if(!gl.getProgramParameter(prog,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(prog));gl.useProgram(prog);
 const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);const ap=gl.getAttribLocation(prog,'p');gl.enableVertexAttribArray(ap);gl.vertexAttribPointer(ap,2,gl.FLOAT,false,0,0);
-const ur=gl.getUniformLocation(prog,'r'),ut=gl.getUniformLocation(prog,'t'),useed=gl.getUniformLocation(prog,'seed'),ul=gl.getUniformLocation(prog,'lowE'),um=gl.getUniformLocation(prog,'midE'),uh=gl.getUniformLocation(prog,'highE'),ue=gl.getUniformLocation(prog,'energy'),umode=gl.getUniformLocation(prog,'mode'),umblend=gl.getUniformLocation(prog,'modeBlend'),uintensity=gl.getUniformLocation(prog,'intensity'),umotion=gl.getUniformLocation(prog,'motion'),ugrain=gl.getUniformLocation(prog,'grain');
-let start=performance.now(), seed=Math.random()*99, smLow=.28,smMid=.25,smHigh=.20,smEnergy=.25;
-const panel=document.getElementById('panel'), closeBtn=document.getElementById('close'), sceneTag=document.getElementById('sceneTag');
-function togglePanel(force){const hidden=force!==undefined?force:!panel.classList.contains('hidden'); panel.classList.toggle('hidden', hidden);} closeBtn.addEventListener('click',()=>togglePanel(true)); let lastTap=0; document.addEventListener('pointerup',e=>{if(e.target.closest && e.target.closest('#panel')) return; const now=performance.now(); if(now-lastTap<340) panel.classList.toggle('hidden'); lastTap=now;});
-
-const intensityEl=document.getElementById('intensity'), motionEl=document.getElementById('motion'), grainEl=document.getElementById('grain');
-const statusText=document.getElementById('statusText'), currentModeText=document.getElementById('currentModeText'), modeBadge=document.getElementById('modeBadge');
-const freeBtn=document.getElementById('free'); let freeDrift=true, manualMode=0;
-function applyModeState(){if(sceneModeSelect.value==='0'){freeDrift=true; modeBadge.textContent='FREE DRIFT'; freeBtn.textContent='FREE DRIFT'; statusText.textContent='Free Drift ready — press play, or just let it run.';} else {freeDrift=false; manualMode=Math.max(0,parseInt(sceneModeSelect.value,10)-1); modeBadge.textContent='MANUAL'; freeBtn.textContent='AUTO'; statusText.textContent='Manual mode selected — sit with one environment.';}}
-sceneModeSelect.addEventListener('change',()=>{applyModeState(); updateTrackUI();});
-freeBtn.addEventListener('click',()=>{if(freeDrift){sceneModeSelect.value=String(manualMode+1);}else{sceneModeSelect.value='0';} applyModeState(); updateTrackUI();});
-applyModeState();
-
-const audio=document.getElementById('audio'), file=document.getElementById('file'), play=document.getElementById('play'), seek=document.getElementById('seek'), timeNow=document.getElementById('timeNow'), timeTotal=document.getElementById('timeTotal'), trackTitle=document.getElementById('trackTitle'), trackSub=document.getElementById('trackSub');
-let ctx=null,an=null,src=null,data=null,objectURL=null;
-function ensureAudio(){if(ctx)return;ctx=new (window.AudioContext||window.webkitAudioContext)();src=ctx.createMediaElementSource(audio);an=ctx.createAnalyser();an.fftSize=512;an.smoothingTimeConstant=.88;data=new Uint8Array(an.frequencyBinCount);src.connect(an);an.connect(ctx.destination);} 
-function analyse(){if(!an||audio.paused){smLow+=((.28)-smLow)*.015;smMid+=((.25)-smMid)*.015;smHigh+=((.20)-smHigh)*.015;smEnergy+=((.25)-smEnergy)*.015;return;}an.getByteFrequencyData(data);const n=data.length;let lo=0,mi=0,hi=0,lc=0,mc=0,hc=0,all=0;for(let i=0;i<n;i++){const x=data[i]/255;all+=x;if(i<n*.12){lo+=x;lc++;}else if(i<n*.48){mi+=x;mc++;}else{hi+=x;hc++;}}let L=lo/lc,M=mi/mc,H=hi/hc,E=all/n;smLow+=(L-smLow)*.06;smMid+=(M-smMid)*.06;smHigh+=(H-smHigh)*.06;smEnergy+=(E-smEnergy)*.05;}
-function fmtTime(s){if(!isFinite(s)) return '0:00'; const m=Math.floor(s/60), ss=Math.floor(s%60); return `${m}:${String(ss).padStart(2,'0')}`;}
-function updateTrackUI(){const currentLabel=freeDrift?'AUTO / FREE DRIFT':MODE_NAMES[manualMode+1]; currentModeText.textContent=freeDrift?MODE_NAMES[(Math.floor((performance.now()-start)/30000)%8)+1]:MODE_NAMES[manualMode+1]; if(!audio.src){trackTitle.textContent='SUBSPACE DRIFT — Chris Weeks'; trackSub.textContent=freeDrift?'Default ambient test mode':'Manual scene mode';} else {trackSub.textContent=freeDrift?'Local track • Auto scene cycling':`Local track • ${currentLabel}`;}}
-file.addEventListener('change',()=>{const f=file.files&&file.files[0];if(!f)return;if(objectURL)URL.revokeObjectURL(objectURL);objectURL=URL.createObjectURL(f);audio.src=objectURL;trackTitle.textContent=f.name.replace(/\.[^/.]+$/,''); play.disabled=false; play.textContent='❚❚'; updateTrackUI(); statusText.textContent='Local track loaded — press play.';});
-play.addEventListener('click',async()=>{if(audio.src){ensureAudio(); if(ctx.state==='suspended') await ctx.resume(); if(audio.paused){await audio.play(); play.textContent='❚❚'; statusText.textContent='Playing local track.';} else {audio.pause(); play.textContent='▶'; statusText.textContent='Paused.';}} else { statusText.textContent='No local track loaded — visual continues in Free Drift.'; }});
-audio.addEventListener('ended',()=>{play.textContent='▶'; statusText.textContent='Track ended.';});
-audio.addEventListener('loadedmetadata',()=>{timeTotal.textContent=fmtTime(audio.duration);});
-audio.addEventListener('timeupdate',()=>{timeNow.textContent=fmtTime(audio.currentTime); timeTotal.textContent=fmtTime(audio.duration||0); if(audio.duration) seek.value=String(audio.currentTime/audio.duration);});
-seek.addEventListener('input',()=>{if(audio.duration) audio.currentTime=audio.duration*parseFloat(seek.value);});
-
-document.getElementById('prev').addEventListener('click',()=>{if(freeDrift){sceneModeSelect.value='8'; freeDrift=false;}else{manualMode=(manualMode+7)%8; sceneModeSelect.value=String(manualMode+1);} applyModeState(); updateTrackUI();});
-document.getElementById('next').addEventListener('click',()=>{if(freeDrift){sceneModeSelect.value='2'; freeDrift=false;}else{manualMode=(manualMode+1)%8; sceneModeSelect.value=String(manualMode+1);} applyModeState(); updateTrackUI();});
-document.getElementById('regen').addEventListener('click',()=>{seed=Math.random()*99; start=performance.now(); statusText.textContent='Reseeded.';});
-document.getElementById('stop').addEventListener('click',()=>{audio.pause(); audio.currentTime=0; play.textContent='▶'; seek.value='0'; timeNow.textContent='0:00'; statusText.textContent='Stopped.';});
-
-let lastLabel='';
-function resize(){const dpr=Math.min(window.devicePixelRatio||1,1.25);const scale=innerWidth<700?0.82:0.92;const w=Math.max(2,Math.floor(innerWidth*dpr*scale)),h=Math.max(2,Math.floor(innerHeight*dpr*scale));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}}
-function frame(now){resize();analyse();const tt=(now-start)/1000;let mode, blend, label; if(freeDrift){const cyc=tt/30; mode=Math.floor(cyc)%8; blend=Math.max(0,Math.min(1,(cyc-Math.floor(cyc)-0.72)/0.28)); label='FREE DRIFT · '+MODE_NAMES[mode+1]; currentModeText.textContent=MODE_NAMES[mode+1]; } else {mode=manualMode; blend=0; label=MODE_NAMES[mode+1]; currentModeText.textContent=MODE_NAMES[mode+1]; } if(label!==lastLabel){lastLabel=label; sceneTag.textContent='D R I F T · SUBSPACE · '+label; sceneTag.style.opacity='1'; setTimeout(()=>sceneTag.style.opacity='.18',3800);} gl.uniform2f(ur,canvas.width,canvas.height); gl.uniform1f(ut,tt); gl.uniform1f(useed,seed); gl.uniform1f(ul,smLow); gl.uniform1f(um,smMid); gl.uniform1f(uh,smHigh); gl.uniform1f(ue,smEnergy); gl.uniform1f(umode,mode); gl.uniform1f(umblend,blend); gl.uniform1f(uintensity,parseFloat(intensityEl.value)); gl.uniform1f(umotion,parseFloat(motionEl.value)); gl.uniform1f(ugrain,parseFloat(grainEl.value)); gl.drawArrays(gl.TRIANGLES,0,6); requestAnimationFrame(frame);} updateTrackUI(); requestAnimationFrame(frame);
+const U={r:gl.getUniformLocation(prog,'r'),t:gl.getUniformLocation(prog,'t'),seed:gl.getUniformLocation(prog,'seed'),low:gl.getUniformLocation(prog,'lowE'),mid:gl.getUniformLocation(prog,'midE'),high:gl.getUniformLocation(prog,'highE'),energy:gl.getUniformLocation(prog,'energy'),mode:gl.getUniformLocation(prog,'mode'),blend:gl.getUniformLocation(prog,'blend'),intensity:gl.getUniformLocation(prog,'intensity'),motion:gl.getUniformLocation(prog,'motion'),dust:gl.getUniformLocation(prog,'dust'),contrast:gl.getUniformLocation(prog,'contrast')};
+let start=performance.now(),seed=Math.random()*99,smLow=.28,smMid=.24,smHigh=.20,smEnergy=.24;
+const audio=document.getElementById('audio'),file=document.getElementById('file'),play=document.getElementById('play'),track=document.getElementById('trackName');let ctx=null,an=null,src=null,data=null,url=null;
+function ensureAudio(){if(ctx)return;ctx=new (window.AudioContext||window.webkitAudioContext)();src=ctx.createMediaElementSource(audio);an=ctx.createAnalyser();an.fftSize=512;an.smoothingTimeConstant=.88;data=new Uint8Array(an.frequencyBinCount);src.connect(an);an.connect(ctx.destination);}
+function analyze(){if(!an||audio.paused){smLow+=(.28-smLow)*.015;smMid+=(.24-smMid)*.015;smHigh+=(.20-smHigh)*.015;smEnergy+=(.24-smEnergy)*.015;return;}an.getByteFrequencyData(data);let lo=0,mi=0,hi=0,a=0,lc=0,mc=0,hc=0;for(let i=0;i<data.length;i++){let x=data[i]/255;a+=x;if(i<data.length*.12){lo+=x;lc++;}else if(i<data.length*.48){mi+=x;mc++;}else{hi+=x;hc++;}}smLow+=(lo/lc-smLow)*.06;smMid+=(mi/mc-smMid)*.06;smHigh+=(hi/hc-smHigh)*.06;smEnergy+=(a/data.length-smEnergy)*.05;}
+file.addEventListener('change',()=>{const f=file.files&&file.files[0];if(!f)return;if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(f);audio.src=url;track.textContent=f.name;play.disabled=false;document.getElementById('status').textContent='Local track loaded';});
+play.addEventListener('click',async()=>{ensureAudio();if(ctx.state==='suspended')await ctx.resume();if(audio.paused){await audio.play();play.textContent='❚❚';}else{audio.pause();play.textContent='▶';}});audio.addEventListener('ended',()=>play.textContent='▶');
+document.getElementById('reseed').addEventListener('click',()=>{seed=Math.random()*99;start=performance.now();});document.getElementById('full').addEventListener('click',async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen?.();else await document.exitFullscreen?.();}catch(e){}});
+const free=document.getElementById('free');free.addEventListener('click',()=>{select.value='auto';free.classList.add('active');});select.addEventListener('change',()=>free.classList.toggle('active',select.value==='auto'));
+const panel=document.getElementById('panel');document.getElementById('close').addEventListener('click',()=>panel.classList.add('hidden'));document.getElementById('menuBtn').addEventListener('click',()=>panel.classList.remove('hidden'));let lastTap=0;document.addEventListener('pointerup',e=>{if(e.target.closest&&e.target.closest('#panel'))return;const now=performance.now();if(now-lastTap<340)panel.classList.toggle('hidden');lastTap=now;});
+const intensity=document.getElementById('intensity'),motionEl=document.getElementById('motion'),dustEl=document.getElementById('dust'),contrastEl=document.getElementById('contrast'),tag=document.getElementById('sceneTag'),modeText=document.getElementById('modeText');let lastMode=-1;
+function resize(){const dpr=Math.min(devicePixelRatio||1,1.25),scale=innerWidth<700?.82:.92,w=Math.max(2,Math.floor(innerWidth*dpr*scale)),h=Math.max(2,Math.floor(innerHeight*dpr*scale));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}}
+function frame(now){resize();analyze();const tt=(now-start)/1000;let m,b;if(select.value==='auto'){const cyc=tt/30;m=Math.floor(cyc)%8;b=Math.max(0,Math.min(1,((cyc-Math.floor(cyc))-.78)/.22));}else{m=parseInt(select.value,10);b=0;}if(m!==lastMode){lastMode=m;tag.textContent='D R I F T · SUBSPACE · '+NAMES[m];modeText.textContent=NAMES[m];tag.style.opacity='1';setTimeout(()=>tag.style.opacity='.18',3800);}gl.uniform2f(U.r,canvas.width,canvas.height);gl.uniform1f(U.t,tt);gl.uniform1f(U.seed,seed);gl.uniform1f(U.low,smLow);gl.uniform1f(U.mid,smMid);gl.uniform1f(U.high,smHigh);gl.uniform1f(U.energy,smEnergy);gl.uniform1f(U.mode,m);gl.uniform1f(U.blend,b);gl.uniform1f(U.intensity,parseFloat(intensity.value));gl.uniform1f(U.motion,parseFloat(motionEl.value));gl.uniform1f(U.dust,parseFloat(dustEl.value));gl.uniform1f(U.contrast,parseFloat(contrastEl.value));gl.drawArrays(gl.TRIANGLES,0,6);requestAnimationFrame(frame);}requestAnimationFrame(frame);
 })();
 </script>
 </body>
