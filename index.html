@@ -4,11 +4,11 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
 <meta name="theme-color" content="#060913" />
-<title>D R I F T: SUBSPACE — Test 02</title>
+<title>D R I F T: SUBSPACE — Test 03</title>
 <style>
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#060913;color:#eef4ff;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;touch-action:none}
 canvas{position:fixed;inset:0;width:100%;height:100%;display:block;background:#060913}
-#shade{position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 46%,rgba(255,255,255,.03) 0%,rgba(0,0,0,.04) 34%,rgba(0,0,0,.20) 72%,rgba(0,0,0,.48) 100%)}
+#shade{position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 46%,rgba(255,255,255,.025) 0%,rgba(0,0,0,.05) 38%,rgba(0,0,0,.22) 74%,rgba(0,0,0,.52) 100%)}
 #sceneTag{position:fixed;left:16px;bottom:14px;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(235,241,255,.68);text-shadow:0 1px 8px #000;transition:opacity 1.5s ease;pointer-events:none}
 #ui{position:fixed;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(92vw,580px);padding:13px 14px 11px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(6,10,20,.44);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 10px 40px rgba(0,0,0,.35);transition:opacity .8s ease,transform .8s ease;z-index:5}
 #ui.hidden{opacity:0;pointer-events:none;transform:translate(-50%,12px)}
@@ -22,14 +22,14 @@ button:disabled{opacity:.35}.pick{display:inline-block}.controls{display:flex;ga
 <body>
 <canvas id="c"></canvas>
 <div id="shade"></div>
-<div id="sceneTag">D R I F T · SUBSPACE · COSMIC CLIFFS</div>
+<div id="sceneTag">D R I F T · SUBSPACE · COSMIC FLOW</div>
 <div id="ui">
-  <div class="top"><div><div class="brand">D R I F T: SUBSPACE</div><div class="sub">TEST 02 · NEBULA DRIFT</div></div><button id="fs">FULL</button></div>
+  <div class="top"><div><div class="brand">D R I F T: SUBSPACE</div><div class="sub">TEST 03 · THROUGH THE NEBULA</div></div><button id="fs">FULL</button></div>
   <div class="controls">
     <label class="pick" for="file">CHOOSE AUDIO</label><input class="file" id="file" type="file" accept="audio/*,.mp3,.wav,.m4a,.aac,.flac,.ogg" />
     <button id="play" disabled>PLAY</button><button id="regen">RESEED</button><span id="name" class="filename">No audio loaded — visual runs autonomously</span>
   </div>
-  <div class="hint">Brighter nebula study with heavier dust and colour. Scenes evolve automatically every ~32 sec. Double-tap/click anywhere to show or hide controls.</div>
+  <div class="hint">Particle mist replaces the visible dot field. Faster traversal. Scenes shift every 30 seconds. Double-tap/click anywhere to show or hide controls.</div>
 </div>
 <audio id="audio" preload="metadata"></audio>
 <script>
@@ -49,48 +49,41 @@ uniform float midE;
 uniform float highE;
 uniform float energy;
 
-float hash11(float p){return fract(sin(p*127.1)*43758.5453123);}
-float hash21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
+float hash21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);} 
 float noise2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);float a=hash21(i),b=hash21(i+vec2(1.,0.)),c=hash21(i+vec2(0.,1.)),d=hash21(i+vec2(1.,1.));return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);} 
 float fbm(vec2 p){float s=0.,a=.5;for(int i=0;i<6;i++){s+=a*noise2(p);p=p*2.03+vec2(17.1,9.2);a*=.52;}return s;}
-float ridge(vec2 p){float n=0.; float a=.5; for(int i=0;i<5;i++){float v=abs(noise2(p)*2.0-1.0); n+=a*(1.0-v); p=p*2.07+vec2(12.4,-6.8); a*=.55;} return n;}
+float ridge(vec2 p){float s=0.,a=.5;for(int i=0;i<5;i++){float v=abs(noise2(p)*2.0-1.0);s += a*(1.0-v);p=p*2.07+vec2(12.4,-6.8);a*=.55;}return s;}
 
-vec3 palA(float s){
-  if(s<0.5) return vec3(0.06,0.11,0.24); // deep blue field
-  if(s<1.5) return vec3(0.36,0.22,0.10); // orange dust
-  if(s<2.5) return vec3(0.28,0.07,0.24); // magenta dust
-  if(s<3.5) return vec3(0.08,0.26,0.18); // green gas
-  if(s<4.5) return vec3(0.26,0.12,0.04); // warm filament
-  return vec3(0.10,0.18,0.28);
+vec3 pal0(float s){
+  if(s<0.5) return vec3(0.08,0.12,0.26);
+  if(s<1.5) return vec3(0.34,0.16,0.09);
+  if(s<2.5) return vec3(0.20,0.08,0.22);
+  if(s<3.5) return vec3(0.08,0.23,0.18);
+  if(s<4.5) return vec3(0.22,0.11,0.04);
+  return vec3(0.10,0.18,0.26);
 }
-vec3 palB(float s){
-  if(s<0.5) return vec3(0.68,0.42,0.16); // cliffs glow
-  if(s<1.5) return vec3(0.10,0.32,0.55); // blue starscape
-  if(s<2.5) return vec3(0.10,0.58,0.34); // hot gas green
-  if(s<3.5) return vec3(0.90,0.82,0.66); // white warm core
-  if(s<4.5) return vec3(0.78,0.22,0.14); // red/orange dust
-  return vec3(0.48,0.70,0.92);           // cool blue dust
+vec3 pal1(float s){
+  if(s<0.5) return vec3(0.72,0.42,0.14);
+  if(s<1.5) return vec3(0.12,0.32,0.56);
+  if(s<2.5) return vec3(0.80,0.28,0.60);
+  if(s<3.5) return vec3(0.94,0.88,0.70);
+  if(s<4.5) return vec3(0.82,0.26,0.14);
+  return vec3(0.48,0.70,0.90);
 }
-vec3 palAccent(float s){
-  if(s<0.5) return vec3(0.84,0.86,0.96);
-  if(s<1.5) return vec3(0.92,0.50,0.80);
-  if(s<2.5) return vec3(0.94,0.96,0.92);
-  if(s<3.5) return vec3(1.00,0.72,0.28);
-  if(s<4.5) return vec3(0.62,0.92,0.98);
-  return vec3(1.00,0.84,0.64);
+vec3 pal2(float s){
+  if(s<0.5) return vec3(0.96,0.92,0.84);
+  if(s<1.5) return vec3(0.64,0.90,0.98);
+  if(s<2.5) return vec3(0.96,0.98,0.94);
+  if(s<3.5) return vec3(1.00,0.70,0.26);
+  if(s<4.5) return vec3(0.96,0.68,0.34);
+  return vec3(0.94,0.96,1.00);
 }
 
-float starPoint(vec2 uv,float sc,float threshold,float drift,float size){
-  vec2 p=uv*sc;
-  p+=vec2(seed*19.1,seed*7.3);
-  p.y += t*drift;
-  p.x += sin(t*0.013 + p.y*0.001)*0.18;
-  vec2 id=floor(p), f=fract(p)-0.5;
-  float h=hash21(id);
-  float d=length(f);
-  float body=smoothstep(size,0.0,d)*step(threshold,h);
-  float tw=0.72 + 0.28*sin(t*(0.5+h*2.9)+h*31.0);
-  return body*tw;
+float microMist(vec2 p, float scale, vec2 flow){
+  float a = fbm(p*scale + flow);
+  float b = fbm(p*(scale*1.9) - flow*1.4 + vec2(4.1,-2.7));
+  float c = fbm(p*(scale*3.4) + flow*2.2 + vec2(-7.3,3.8));
+  return a*0.50 + b*0.32 + c*0.18;
 }
 
 void main(){
@@ -98,107 +91,106 @@ void main(){
   float asp=r.x/r.y;
   vec2 q=(uv-.5)*vec2(asp,1.0);
 
-  float cycle=t/32.0;
+  float cycle=t/30.0;
   float scene=floor(mod(cycle,6.0));
   float blend=smoothstep(0.72,1.0,fract(cycle));
   float scene2=mod(scene+1.0,6.0);
-  vec3 cA=mix(palA(scene),palA(scene2),blend);
-  vec3 cB=mix(palB(scene),palB(scene2),blend);
-  vec3 cC=mix(palAccent(scene),palAccent(scene2),blend);
+  vec3 c0=mix(pal0(scene),pal0(scene2),blend);
+  vec3 c1=mix(pal1(scene),pal1(scene2),blend);
+  vec3 c2=mix(pal2(scene),pal2(scene2),blend);
 
-  float baseLift=0.11 + 0.06*highE + 0.04*energy;
-  vec3 col=vec3(0.018,0.026,0.050) + cA*0.12 + cB*0.06;
-  vec2 cam = vec2(0.032*sin(t*0.043 + seed*2.1) + 0.018*sin(t*0.017),
-                  0.022*cos(t*0.031 + seed*3.7) - 0.014*cos(t*0.012));
-  cam += vec2(0.010*sin(t*0.089),0.008*cos(t*0.072));
+  // Faster, more directional traversal.
+  vec2 forward = vec2(0.0, -t*(0.055 + 0.018*midE));
+  vec2 drift = vec2(0.12*sin(t*0.11 + seed*2.3), 0.08*cos(t*0.08 + seed*1.7));
+  vec2 cam = forward + drift;
 
-  float fogAlpha = 0.0;
+  vec3 col = vec3(0.022,0.030,0.055) + c0*0.12 + c1*0.05;
+  float fogA = 0.0;
 
-  for(int i=0;i<11;i++){
+  // Volumetric-like nebula layers to create moving through the field.
+  for(int i=0;i<12;i++){
     float fi=float(i);
-    float z=fi/10.0;
-    float travel=fract(z + t*(0.010 + 0.006*midE) * (0.74 + z*0.46) + seed*0.13);
-    float depth=mix(2.6,0.34,travel);
-    vec2 p=q*depth + cam*(0.35+z*1.25);
-    p += vec2(travel*0.62,-travel*0.28) + vec2(seed*1.9,-seed*1.4);
+    float z=fi/11.0;
+    float travel = fract(z + t*(0.017 + 0.010*midE)*(0.72 + z*0.42) + seed*0.19);
+    float depth = mix(3.2, 0.26, travel);
+    vec2 p = q*depth + cam*(0.28 + z*1.55);
+    p += vec2(travel*0.70, -travel*0.34) + vec2(seed*1.8, -seed*1.4);
 
-    float broad = fbm(p*0.33 + vec2(7.0,-3.0) + t*0.0035);
-    float soft  = fbm(p*0.75 + vec2(-4.2,6.1) - t*0.0042);
-    float fine  = fbm(p*1.55 + vec2(2.7,-9.4) + t*0.0075);
-    float fil   = ridge(p*1.05 + vec2(-1.3,8.7) - t*0.0055);
-    float cav   = fbm(p*0.25 + vec2(19.0,4.0));
+    float broad = fbm(p*0.34 + vec2(6.0,-4.0));
+    float soft  = fbm(p*0.82 + vec2(-3.0,7.3) - t*0.006);
+    float fine  = fbm(p*1.72 + vec2(2.6,-8.4) + t*0.009);
+    float fil   = ridge(p*1.08 + vec2(1.0,7.0) - t*0.007);
+    float cav   = fbm(p*0.22 + vec2(18.0,2.0));
 
-    float density = broad*0.44 + soft*0.28 + fine*0.14 + fil*0.22;
-    density += (lowE-0.24)*0.15 + (midE-0.22)*0.07;
-    density -= smoothstep(0.44,0.80,cav) * 0.22; // hollows/cavities
+    float density = broad*0.44 + soft*0.26 + fine*0.12 + fil*0.24;
+    density += (lowE-0.22)*0.15 + (midE-0.22)*0.09;
+    density -= smoothstep(0.40,0.82,cav) * 0.20;
 
-    float body = smoothstep(0.42,0.78,density);
-    float filament = smoothstep(0.36,0.85,fil) * smoothstep(0.28,0.92,broad);
-    float alpha = body * mix(0.060,0.165,pow(1.0-travel,1.35));
-    alpha *= smoothstep(0.0,0.06,travel) * smoothstep(1.0,0.72,travel);
-    alpha += filament * 0.030 * (0.45 + highE);
+    float body = smoothstep(0.40,0.78,density);
+    float filament = smoothstep(0.34,0.84,fil) * smoothstep(0.30,0.90,broad);
+    float alpha = body * mix(0.055,0.17,pow(1.0-travel,1.25));
+    alpha *= smoothstep(0.0,0.05,travel) * smoothstep(1.0,0.70,travel);
+    alpha += filament * 0.025 * (0.45 + highE);
 
-    float inner = fbm(p*2.2 + vec2(5.0,-7.0));
-    float heat  = ridge(p*1.7 + vec2(-8.0,3.0));
-    vec3 local = mix(cA,cB,clamp(inner*0.95 + broad*0.35,0.0,1.0));
-    local = mix(local,cC,smoothstep(0.58,0.92,heat) * (0.35 + 0.25*highE));
-    local += cC * smoothstep(0.63,0.97,inner) * 0.11;
-    local += vec3(0.10,0.12,0.17) * filament * 0.45;
+    float inner = fbm(p*2.25 + vec2(5.0,-7.0));
+    float heat  = ridge(p*1.85 + vec2(-8.0,3.0));
+    vec3 local = mix(c0,c1,clamp(inner*0.95 + broad*0.32,0.0,1.0));
+    local = mix(local,c2,smoothstep(0.58,0.95,heat)*(0.32 + 0.26*highE));
+    local += c2 * smoothstep(0.70,0.98,inner) * 0.10;
 
-    col += (1.0-fogAlpha) * local * alpha;
-    fogAlpha += (1.0-fogAlpha) * alpha * 0.90;
+    col += (1.0-fogA) * local * alpha;
+    fogA += (1.0-fogA) * alpha * 0.90;
   }
 
-  // Large embedded glow fields, more like illuminated gas than isolated orbs.
-  vec2 gp1 = q - vec2(0.30*sin(t*0.014 + seed*4.0), 0.18*cos(t*0.017));
-  vec2 gp2 = q + vec2(0.24*cos(t*0.011 + seed*2.0), 0.16*sin(t*0.013 + 1.1));
-  float g1 = smoothstep(0.86,0.10,length(gp1)) * smoothstep(0.28,0.88,fbm(gp1*1.25 + t*0.006 + seed));
-  float g2 = smoothstep(0.72,0.08,length(gp2)) * smoothstep(0.30,0.92,fbm(gp2*1.55 - t*0.004 + seed*1.8));
-  col += cB * g1 * (0.14 + 0.09*highE);
-  col += cC * g2 * (0.10 + 0.12*highE);
+  // Large internal illuminated regions.
+  vec2 gp1 = q - vec2(0.22*sin(t*0.020 + seed*4.0), 0.16*cos(t*0.017));
+  vec2 gp2 = q + vec2(0.18*cos(t*0.016 + seed*2.2), 0.14*sin(t*0.014 + 1.1));
+  float g1 = smoothstep(0.92,0.08,length(gp1)) * smoothstep(0.30,0.90,fbm(gp1*1.18 + t*0.010 + seed));
+  float g2 = smoothstep(0.78,0.06,length(gp2)) * smoothstep(0.32,0.92,fbm(gp2*1.54 - t*0.006 + seed*1.8));
+  col += c1 * g1 * (0.14 + 0.09*highE);
+  col += c2 * g2 * (0.09 + 0.10*highE);
 
-  // Dust/grain system: multiple particulate scales, all inside the field.
-  vec2 suv=(uv-.5)*vec2(asp,1.0)+0.5;
-  float stars=0.0;
-  stars += starPoint(suv+cam*0.07, 38.0, 0.989, -0.0038, 0.040) * 0.34;
-  stars += starPoint(suv+cam*0.14, 66.0, 0.993, -0.0056, 0.033) * 0.24;
-  stars += starPoint(suv+cam*0.21, 110.0, 0.996, -0.0088, 0.026) * 0.16;
-  stars *= 0.40 + 0.34*highE;
-  col += vec3(0.78,0.86,1.0) * stars;
+  // Particle dust as moving mist, not visible uniform dots.
+  vec2 flow1 = vec2(t*0.11, -t*0.18) + vec2(seed*4.0, seed*2.0);
+  vec2 flow2 = vec2(-t*0.21, t*0.16) + vec2(seed*2.7, -seed*5.1);
+  float mist1 = microMist(q*0.95 + cam*1.2, 2.6, flow1);
+  float mist2 = microMist(q*1.25 + cam*1.7, 4.0, flow2);
+  float mist3 = microMist(q*1.75 + cam*2.1, 6.2, flow1*1.3 - flow2*0.4);
+  float mist = mist1*0.48 + mist2*0.34 + mist3*0.18;
+  mist = smoothstep(0.42, 0.88, mist);
+  mist *= (0.10 + fogA*0.42 + highE*0.10);
+  col += mix(c1,c2,0.55) * mist * 0.34;
 
-  vec2 d1 = q*1.10 + vec2(t*0.015,-t*0.010);
-  vec2 d2 = q*1.85 + vec2(-t*0.022,t*0.014);
-  vec2 d3 = q*2.60 + vec2(t*0.030,-t*0.021);
+  // Micro-grain shimmer that swirls and breathes inside the gas.
+  vec2 mp = q*vec2(18.0,22.0) + vec2(t*0.65,-t*0.90);
+  mp += vec2(fbm(q*2.0 + flow1), fbm(q*2.3 + flow2))*4.0;
+  float micro = noise2(mp) * 0.55 + noise2(mp*1.9 + vec2(7.0,-2.0))*0.30 + noise2(mp*3.4 + vec2(-4.0,6.0))*0.15;
+  micro = smoothstep(0.48,0.82,micro);
+  float microFlick = 0.72 + 0.28*sin(t*1.8 + q.x*8.0 + q.y*5.0);
+  col += vec3(1.0) * micro * microFlick * (0.020 + 0.030*highE) * (0.25 + fogA*0.95);
 
-  float cell1 = hash21(floor(d1*48.0 + seed*20.0));
-  float mote1 = smoothstep(0.10,0.0,length(fract(d1*48.0 + seed*20.0)-0.5))*step(0.955,cell1);
-  float cell2 = hash21(floor(d2*32.0 + seed*41.0));
-  float mote2 = smoothstep(0.16,0.0,length(fract(d2*32.0 + seed*41.0)-0.5))*step(0.935,cell2);
-  float cell3 = hash21(floor(d3*20.0 + seed*67.0));
-  float mote3 = smoothstep(0.22,0.0,length(fract(d3*20.0 + seed*67.0)-0.5))*step(0.900,cell3);
+  // Very sparse occasional perceptible specks only.
+  vec2 sp = q*10.0 + cam*3.0;
+  float speckCell = hash21(floor(sp*14.0 + seed*47.0));
+  float speck = smoothstep(0.14,0.0,length(fract(sp*14.0 + seed*47.0)-0.5))*step(0.9925,speckCell);
+  speck *= (0.08 + 0.12*highE) * (0.25 + 0.75*fogA);
+  col += c2 * speck;
 
-  float shimmer = 0.65 + 0.35*sin(t*0.9 + q.x*2.0 + q.y*1.3);
-  float dustMix = (mote1*0.22 + mote2*0.30 + mote3*0.36) * shimmer;
-  dustMix *= (0.65 + 0.55*highE + 0.20*energy);
-  col += mix(cB,cC,0.55) * dustMix;
+  // A tiny residual far field so it doesn't look empty, but no obvious star grid.
+  float residue = smoothstep(0.9975,1.0,hash21(floor((uv+0.5)*vec2(170.0,240.0) + vec2(seed*31.0,t*0.7))));
+  col += vec3(0.7,0.8,1.0) * residue * 0.012;
 
-  // Fine animated grain, visible mostly inside bright gas.
-  float grain = hash21(floor((uv + vec2(t*0.004,-t*0.003))*vec2(r.x*0.40,r.y*0.40)+seed*91.0));
-  grain = (grain-0.5);
-  col += grain * (0.024 + 0.028*highE) * (0.32 + fogAlpha*0.85);
+  // Contrast and lift.
+  float voidN = fbm(q*0.40 + cam*0.35 + vec2(seed*5.0,-seed*3.0));
+  float voidMask = smoothstep(0.60,0.84,voidN) * (0.10 + 0.11*lowE);
+  col *= 1.0 - voidMask*0.42;
 
-  // Contrast shaping: preserve voids but avoid crushed black.
-  float voidN = fbm(q*0.42 + vec2(t*0.0022,-t*0.0017)+seed*6.0);
-  float voidMask = smoothstep(0.58,0.84,voidN) * (0.10 + 0.12*lowE);
-  col *= 1.0 - voidMask*0.45;
+  float vig = 1.0 - smoothstep(0.46,1.0,length(q*vec2(0.74,1.0)));
+  col *= 0.83 + 0.17*vig;
 
-  // Soft vignette only.
-  float vig = 1.0 - smoothstep(0.46,0.98,length(q*vec2(0.74,1.0)));
-  col *= 0.82 + 0.18*vig;
-
-  col *= 0.98 + 0.22*energy + 0.08*highE;
-  col += baseLift;
-  col = pow(max(col,vec3(0.0)),vec3(0.86));
+  col *= 1.00 + 0.20*energy + 0.09*highE;
+  col += vec3(0.07,0.075,0.085);
+  col = pow(max(col,vec3(0.0)), vec3(0.88));
   col = clamp(col,0.0,1.0);
   gl_FragColor = vec4(col,1.0);
 }`;
@@ -221,9 +213,9 @@ document.getElementById('fs').addEventListener('click',async()=>{try{if(!documen
 const ui=document.getElementById('ui'),tag=document.getElementById('sceneTag');let hideTimer=null;
 function showUI(){ui.classList.remove('hidden');clearTimeout(hideTimer);hideTimer=setTimeout(()=>ui.classList.add('hidden'),9000);}function toggleUI(){ui.classList.toggle('hidden');if(!ui.classList.contains('hidden'))showUI();}
 let lastTap=0;document.addEventListener('pointerup',e=>{if(e.target.closest&&e.target.closest('#ui'))return;const now=performance.now();if(now-lastTap<340)toggleUI();lastTap=now;});showUI();
-const sceneNames=['COSMIC CLIFFS','TARANTULA VEIL','ORION HOLLOW','CAT\'S PAW FIELD','PROTOSTAR DUST','SUBSPACE GLOW'];let lastScene=-1;
+const sceneNames=['COSMIC FLOW','TARANTULA DRIFT','ORION TUNNEL','CAT\'S PAW MIST','PROTOSTAR RUN','SUBSPACE GLOW'];let lastScene=-1;
 function resize(){const dpr=Math.min(window.devicePixelRatio||1,1.25);const scale=innerWidth<700?.82:.92;const w=Math.max(2,Math.floor(innerWidth*dpr*scale)),h=Math.max(2,Math.floor(innerHeight*dpr*scale));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}}
-function frame(now){resize();analyse();const tt=(now-start)/1000;const sc=Math.floor(tt/32)%6;if(sc!==lastScene){lastScene=sc;tag.textContent='D R I F T · SUBSPACE · '+sceneNames[sc];tag.style.opacity='1';setTimeout(()=>tag.style.opacity='.18',4200);}gl.uniform2f(ur,canvas.width,canvas.height);gl.uniform1f(ut,tt);gl.uniform1f(useed,seed);gl.uniform1f(ul,smLow);gl.uniform1f(um,smMid);gl.uniform1f(uh,smHigh);gl.uniform1f(ue,smEnergy);gl.drawArrays(gl.TRIANGLES,0,6);requestAnimationFrame(frame);}requestAnimationFrame(frame);
+function frame(now){resize();analyse();const tt=(now-start)/1000;const sc=Math.floor(tt/30)%6;if(sc!==lastScene){lastScene=sc;tag.textContent='D R I F T · SUBSPACE · '+sceneNames[sc];tag.style.opacity='1';setTimeout(()=>tag.style.opacity='.18',3800);}gl.uniform2f(ur,canvas.width,canvas.height);gl.uniform1f(ut,tt);gl.uniform1f(useed,seed);gl.uniform1f(ul,smLow);gl.uniform1f(um,smMid);gl.uniform1f(uh,smHigh);gl.uniform1f(ue,smEnergy);gl.drawArrays(gl.TRIANGLES,0,6);requestAnimationFrame(frame);}requestAnimationFrame(frame);
 })();
 </script>
 </body>
