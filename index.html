@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
-<meta name="theme-color" content="#04070f" />
-<title>D R I F T: SUBSPACE — Test 04</title>
+<meta name="theme-color" content="#03060d" />
+<title>D R I F T: SUBSPACE — Test 05</title>
 <style>
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#04070f;color:#eef4ff;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;touch-action:none}
-canvas{position:fixed;inset:0;width:100%;height:100%;display:block;background:#04070f}
-#shade{position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 48%,rgba(255,255,255,.018) 0%,rgba(0,0,0,.03) 32%,rgba(0,0,0,.16) 64%,rgba(0,0,0,.54) 100%)}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#03060d;color:#eef4ff;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;touch-action:none}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block;background:#03060d}
+#shade{position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 48%,rgba(255,255,255,.014) 0%,rgba(0,0,0,.03) 34%,rgba(0,0,0,.18) 68%,rgba(0,0,0,.56) 100%)}
 #sceneTag{position:fixed;left:16px;bottom:14px;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(235,241,255,.66);text-shadow:0 1px 8px #000;transition:opacity 1.5s ease;pointer-events:none}
-#ui{position:fixed;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(94vw,640px);padding:13px 14px 11px;border:1px solid rgba(255,255,255,.11);border-radius:18px;background:rgba(5,8,17,.42);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 10px 40px rgba(0,0,0,.35);transition:opacity .8s ease,transform .8s ease;z-index:5}
+#ui{position:fixed;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(94vw,650px);padding:13px 14px 11px;border:1px solid rgba(255,255,255,.11);border-radius:18px;background:rgba(5,8,17,.40);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 10px 40px rgba(0,0,0,.35);transition:opacity .8s ease,transform .8s ease;z-index:5}
 #ui.hidden{opacity:0;pointer-events:none;transform:translate(-50%,12px)}
 .top{display:flex;align-items:center;gap:10px}.brand{font-size:11px;letter-spacing:.24em;font-weight:600;flex:1;white-space:nowrap}.sub{opacity:.64;font-size:9px;letter-spacing:.14em;margin-top:3px}
 button,.pick{appearance:none;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:#edf3ff;border-radius:999px;height:34px;padding:0 13px;font:600 10px/34px -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
@@ -25,7 +25,7 @@ button:disabled{opacity:.35}.pick{display:inline-block}.controls{display:flex;ga
 <div id="shade"></div>
 <div id="sceneTag">D R I F T · SUBSPACE · FREE DRIFT</div>
 <div id="ui">
-  <div class="top"><div><div class="brand">D R I F T: SUBSPACE</div><div class="sub">TEST 04 · EIGHT MODES + FREE DRIFT</div></div><button id="fs">FULL</button></div>
+  <div class="top"><div><div class="brand">D R I F T: SUBSPACE</div><div class="sub">TEST 05 · DRIFTING CONSCIOUSNESS</div></div><button id="fs">FULL</button></div>
   <div class="controls">
     <button id="free" class="active">FREE DRIFT</button>
     <button id="mode">MODE: COSMIC FLOW</button>
@@ -33,7 +33,7 @@ button:disabled{opacity:.35}.pick{display:inline-block}.controls{display:flex;ga
     <button id="play" disabled>PLAY</button><button id="regen">RESEED</button>
   </div>
   <div class="controls" style="margin-top:8px"><span id="name" class="filename">No audio loaded — visual runs autonomously</span></div>
-  <div class="hint">Free Drift cycles through eight space moods every 30 seconds. Manual mode lets you sit with one mode. Double-tap/click anywhere to show or hide controls.</div>
+  <div class="hint">More environmental variation, microdust mist, and layered motion on top of forward drift. Free Drift cycles every 30 seconds. Double-tap/click anywhere to show or hide controls.</div>
 </div>
 <audio id="audio" preload="metadata"></audio>
 <script>
@@ -62,26 +62,27 @@ float hash21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fra
 float noise2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);float a=hash21(i),b=hash21(i+vec2(1.,0.)),c=hash21(i+vec2(0.,1.)),d=hash21(i+vec2(1.,1.));return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);} 
 float fbm(vec2 p){float s=0.,a=.5;for(int i=0;i<6;i++){s+=a*noise2(p);p=p*2.03+vec2(17.1,9.2);a*=.52;}return s;}
 float ridge(vec2 p){float s=0.,a=.5;for(int i=0;i<5;i++){float v=abs(noise2(p)*2.0-1.0);s += a*(1.0-v);p=p*2.07+vec2(12.4,-6.8);a*=.55;}return s;}
+mat2 rot(float a){float s=sin(a), c=cos(a); return mat2(c,-s,s,c);}
 
 vec3 basePal(float i){
   if(i<0.5) return vec3(0.05,0.08,0.18);
-  if(i<1.5) return vec3(0.18,0.07,0.16);
-  if(i<2.5) return vec3(0.08,0.13,0.24);
-  if(i<3.5) return vec3(0.12,0.10,0.06);
-  if(i<4.5) return vec3(0.16,0.08,0.05);
-  if(i<5.5) return vec3(0.05,0.11,0.18);
+  if(i<1.5) return vec3(0.17,0.06,0.14);
+  if(i<2.5) return vec3(0.07,0.12,0.23);
+  if(i<3.5) return vec3(0.11,0.09,0.06);
+  if(i<4.5) return vec3(0.15,0.08,0.05);
+  if(i<5.5) return vec3(0.05,0.10,0.17);
   if(i<6.5) return vec3(0.03,0.05,0.10);
   return vec3(0.05,0.10,0.15);
 }
 vec3 glowPal(float i){
-  if(i<0.5) return vec3(0.58,0.36,0.14);
-  if(i<1.5) return vec3(0.72,0.28,0.58);
-  if(i<2.5) return vec3(0.16,0.38,0.65);
-  if(i<3.5) return vec3(0.85,0.78,0.58);
-  if(i<4.5) return vec3(0.76,0.28,0.14);
-  if(i<5.5) return vec3(0.46,0.68,0.92);
+  if(i<0.5) return vec3(0.56,0.35,0.14);
+  if(i<1.5) return vec3(0.70,0.26,0.56);
+  if(i<2.5) return vec3(0.16,0.37,0.64);
+  if(i<3.5) return vec3(0.82,0.76,0.57);
+  if(i<4.5) return vec3(0.74,0.28,0.14);
+  if(i<5.5) return vec3(0.46,0.66,0.90);
   if(i<6.5) return vec3(0.18,0.24,0.42);
-  return vec3(0.34,0.56,0.86);
+  return vec3(0.32,0.55,0.84);
 }
 vec3 accentPal(float i){
   if(i<0.5) return vec3(0.92,0.90,0.82);
@@ -94,25 +95,13 @@ vec3 accentPal(float i){
   return vec3(0.98,0.88,0.66);
 }
 float speedMul(float i){
-  if(i<0.5) return 1.00;
-  if(i<1.5) return 1.06;
-  if(i<2.5) return 0.94;
-  if(i<3.5) return 0.88;
-  if(i<4.5) return 1.14;
-  if(i<5.5) return 0.92;
-  if(i<6.5) return 1.20;
-  return 1.02;
+  if(i<0.5) return 1.00; if(i<1.5) return 1.06; if(i<2.5) return 0.94; if(i<3.5) return 0.88; if(i<4.5) return 1.14; if(i<5.5) return 0.92; if(i<6.5) return 1.20; return 1.02;
 }
 float densityMul(float i){
-  if(i<0.5) return 1.00;
-  if(i<1.5) return 1.02;
-  if(i<2.5) return 0.92;
-  if(i<3.5) return 1.10;
-  if(i<4.5) return 1.06;
-  if(i<5.5) return 0.96;
-  if(i<6.5) return 0.84;
-  return 0.90;
+  if(i<0.5) return 1.00; if(i<1.5) return 1.04; if(i<2.5) return 0.92; if(i<3.5) return 1.10; if(i<4.5) return 1.06; if(i<5.5) return 0.94; if(i<6.5) return 0.82; return 0.90;
 }
+float rollAmt(float i){ if(i<0.5) return 0.10; if(i<1.5) return 0.16; if(i<2.5) return 0.20; if(i<3.5) return 0.08; if(i<4.5) return 0.13; if(i<5.5) return 0.11; if(i<6.5) return 0.24; return 0.18; }
+float orbitAmt(float i){ if(i<0.5) return 0.16; if(i<1.5) return 0.22; if(i<2.5) return 0.14; if(i<3.5) return 0.12; if(i<4.5) return 0.18; if(i<5.5) return 0.16; if(i<6.5) return 0.10; return 0.20; }
 
 void main(){
   vec2 uv=v;
@@ -126,97 +115,113 @@ void main(){
   vec3 c2 = mix(accentPal(mA),accentPal(mB),modeBlend);
   float spd = mix(speedMul(mA),speedMul(mB),modeBlend);
   float densMul = mix(densityMul(mA),densityMul(mB),modeBlend);
+  float rollMag = mix(rollAmt(mA),rollAmt(mB),modeBlend);
+  float orbitMag = mix(orbitAmt(mA),orbitAmt(mB),modeBlend);
 
-  // darker subspace base
-  vec3 col = vec3(0.008,0.012,0.024) + c0*0.055;
+  // Slow drifting-consciousness orientation changes: roll, tilt, orbit, up/down.
+  float ang = sin(t*0.035 + seed*1.9)*rollMag + sin(t*0.017 + seed*3.7)*rollMag*0.7;
+  vec2 qq = rot(ang) * q;
+  qq += vec2(0.0, sin(t*0.026 + seed*2.0)*0.035);
 
-  // stronger forward drift sensation: downward/forward passage with lateral meander
-  vec2 forward = vec2(0.0, -t*(0.038 + 0.012*midE) * spd);
-  vec2 meander = vec2(0.08*sin(t*0.065 + seed*2.3), 0.05*cos(t*0.048 + seed*1.7));
-  vec2 cam = forward + meander;
+  vec2 forward = vec2(0.0, -t*(0.040 + 0.012*midE) * spd);
+  vec2 orbit = vec2(cos(t*0.042 + seed*1.1), sin(t*0.038 + seed*2.7))*orbitMag;
+  vec2 sway = vec2(0.08*sin(t*0.060 + seed*2.3), 0.05*cos(t*0.049 + seed*1.7));
+  vec2 cam = forward + orbit + sway;
+
+  vec3 col = vec3(0.006,0.010,0.022) + c0*0.052;
   float fogA = 0.0;
 
-  // fewer, broader nebula banks; darker background; stronger parallax movement
+  // Volumetric-like nebula layers with stronger parallax and varied motion.
   for(int i=0;i<10;i++){
     float fi=float(i);
     float z=fi/9.0;
-    float travel = fract(z + t*(0.020 + 0.010*midE) * (0.64 + z*0.54) * spd + seed*0.17);
-    float depth = mix(4.0, 0.20, travel);
-    float expand = mix(0.90, 2.40, pow(1.0-travel, 1.4));
-    vec2 p = q * depth * expand + cam*(0.32 + z*1.75);
-    p += vec2(travel*0.62, -travel*0.52) + vec2(seed*1.5, -seed*1.2);
+    float travel = fract(z + t*(0.022 + 0.010*midE) * (0.62 + z*0.56) * spd + seed*0.17);
+    float depth = mix(4.8, 0.16, travel);
+    float expand = mix(0.86, 2.85, pow(1.0-travel, 1.45));
+    vec2 p = qq * depth * expand + cam*(0.34 + z*1.95);
 
-    float broad = fbm(p*0.28 + vec2(6.0,-4.0));
-    float soft  = fbm(p*0.70 + vec2(-3.0,7.3) - t*0.004);
-    float fil   = ridge(p*0.92 + vec2(1.0,7.0) - t*0.005);
-    float cav   = fbm(p*0.18 + vec2(18.0,2.0));
-    float density = (broad*0.54 + soft*0.30 + fil*0.18) * densMul;
+    float turn = ang*(0.35 + z*0.6) + sin(t*0.028 + z*3.8 + seed)*0.08;
+    p = rot(turn) * p;
+    vec2 spiral = vec2(cos(t*0.06 + z*7.0 + seed*2.0), sin(t*0.05 + z*6.0 + seed*1.3)) * (0.18 + 0.24*(1.0-travel));
+    p += spiral + vec2(travel*0.65, -travel*0.55) + vec2(seed*1.5, -seed*1.2);
+
+    float broad = fbm(p*0.26 + vec2(6.0,-4.0));
+    float soft  = fbm(p*0.64 + vec2(-3.0,7.3) - t*0.004);
+    float fine  = fbm(p*1.18 + vec2(2.0,-5.0) + t*0.004);
+    float fil   = ridge(p*0.84 + vec2(1.0,7.0) - t*0.005);
+    float cav   = fbm(p*0.17 + vec2(18.0,2.0));
+    float density = (broad*0.49 + soft*0.26 + fine*0.10 + fil*0.18) * densMul;
     density += (lowE-0.22)*0.12;
     density -= smoothstep(0.42,0.82,cav) * 0.18;
 
-    float body = smoothstep(0.48,0.80,density);
+    float body = smoothstep(0.49,0.80,density);
     float filament = smoothstep(0.44,0.88,fil) * smoothstep(0.36,0.92,broad);
-    float alpha = body * mix(0.040,0.145,pow(1.0-travel,1.35));
-    alpha *= smoothstep(0.0,0.05,travel) * smoothstep(1.0,0.68,travel);
-    alpha += filament * 0.014 * (0.40 + highE);
+    float alpha = body * mix(0.038,0.145,pow(1.0-travel,1.32));
+    alpha *= smoothstep(0.0,0.05,travel) * smoothstep(1.0,0.66,travel);
+    alpha += filament * 0.013 * (0.38 + highE);
 
-    float inner = fbm(p*1.65 + vec2(5.0,-7.0));
-    float heat  = ridge(p*1.25 + vec2(-8.0,3.0));
-    vec3 local = mix(c0,c1,clamp(inner*0.86 + broad*0.34,0.0,1.0));
-    local = mix(local,c2,smoothstep(0.66,0.96,heat)*(0.18 + 0.18*highE));
-    local *= 0.82;
+    float inner = fbm(p*1.52 + vec2(5.0,-7.0));
+    float heat  = ridge(p*1.12 + vec2(-8.0,3.0));
+    vec3 local = mix(c0,c1,clamp(inner*0.84 + broad*0.32,0.0,1.0));
+    local = mix(local,c2,smoothstep(0.68,0.96,heat)*(0.16 + 0.18*highE));
+    local *= 0.80;
 
     col += (1.0-fogA) * local * alpha;
     fogA += (1.0-fogA) * alpha * 0.88;
   }
 
-  // subtle internal illuminated bodies, less showy
-  vec2 gp1 = q - vec2(0.18*sin(t*0.013 + seed*4.0), 0.12*cos(t*0.011));
-  vec2 gp2 = q + vec2(0.14*cos(t*0.010 + seed*2.2), 0.11*sin(t*0.012 + 1.1));
-  float g1 = smoothstep(0.92,0.10,length(gp1)) * smoothstep(0.44,0.88,fbm(gp1*1.0 + t*0.006 + seed));
-  float g2 = smoothstep(0.84,0.08,length(gp2)) * smoothstep(0.46,0.90,fbm(gp2*1.3 - t*0.004 + seed*1.8));
-  col += c1 * g1 * (0.05 + 0.04*highE);
-  col += c2 * g2 * (0.03 + 0.03*highE);
+  // Internal illuminated regions with slow passage around them.
+  vec2 gp1 = rot(ang*0.7) * (qq - vec2(0.16*sin(t*0.013 + seed*4.0), 0.11*cos(t*0.011)));
+  vec2 gp2 = rot(-ang*0.5) * (qq + vec2(0.13*cos(t*0.010 + seed*2.2), 0.10*sin(t*0.012 + 1.1)));
+  float g1 = smoothstep(0.95,0.10,length(gp1)) * smoothstep(0.46,0.88,fbm(gp1*0.92 + t*0.006 + seed));
+  float g2 = smoothstep(0.86,0.08,length(gp2)) * smoothstep(0.48,0.90,fbm(gp2*1.24 - t*0.004 + seed*1.8));
+  col += c1 * g1 * (0.045 + 0.04*highE);
+  col += c2 * g2 * (0.025 + 0.03*highE);
 
-  // particle dust as fine mist, not dots
-  vec2 flow1 = vec2(t*0.05, -t*0.09) + vec2(seed*3.0, seed*1.2);
-  vec2 flow2 = vec2(-t*0.11, t*0.08) + vec2(seed*1.9, -seed*3.2);
-  float mist1 = fbm(q*1.2 + cam*1.6 + flow1);
-  float mist2 = fbm(q*2.1 + cam*2.4 - flow2 + vec2(7.0,-2.0));
-  float mist3 = fbm(q*3.8 + cam*3.2 + flow1*1.6 - flow2*0.7 + vec2(-4.0,6.0));
-  float mist = mist1*0.52 + mist2*0.31 + mist3*0.17;
-  mist = smoothstep(0.50,0.84,mist);
-  mist *= (0.04 + fogA*0.18 + highE*0.05);
-  col += mix(c1,c2,0.35) * mist * 0.22;
+  // Microdust mist drifting around the viewer in multiple directional layers.
+  vec2 dustBase = qq*vec2(6.0,7.0);
+  vec2 df1 = cam*3.4 + vec2(t*0.18,-t*0.30);
+  vec2 df2 = rot(ang*1.2)*(cam*4.2 + vec2(-t*0.34,t*0.22));
+  vec2 df3 = rot(-ang*0.9)*(cam*5.4 + vec2(t*0.28,t*0.18));
 
-  // micro-grain only within the gas field
-  vec2 mp = q*vec2(22.0,26.0) + vec2(t*0.28,-t*0.42) + cam*6.0;
-  float micro = noise2(mp) * 0.55 + noise2(mp*1.8 + vec2(7.0,-2.0))*0.30 + noise2(mp*3.0 + vec2(-4.0,6.0))*0.15;
-  micro = smoothstep(0.54,0.80,micro);
-  float microFlick = 0.78 + 0.22*sin(t*1.2 + q.x*7.0 + q.y*4.0);
-  col += vec3(1.0) * micro * microFlick * (0.012 + 0.015*highE) * (0.12 + fogA*0.55);
+  float mist1 = fbm(dustBase*0.55 + df1);
+  float mist2 = fbm(dustBase*0.95 + df2 + vec2(6.0,-2.0));
+  float mist3 = fbm(dustBase*1.70 + df3 + vec2(-4.0,6.0));
+  float mist4 = ridge(dustBase*1.15 + df2*0.65 - df1*0.35);
+  float mist = mist1*0.36 + mist2*0.26 + mist3*0.18 + mist4*0.20;
+  mist = smoothstep(0.50,0.83,mist);
+  mist *= (0.05 + fogA*0.22 + highE*0.05);
+  col += mix(c1,c2,0.30) * mist * 0.20;
 
-  // extremely sparse perceivable specks only
-  vec2 sp = q*8.0 + cam*3.2;
-  float speckCell = hash21(floor(sp*10.0 + seed*43.0));
-  float speck = smoothstep(0.12,0.0,length(fract(sp*10.0 + seed*43.0)-0.5))*step(0.9972,speckCell);
-  speck *= (0.03 + 0.04*highE) * (0.18 + 0.60*fogA);
+  // Fine micro-particles surrounding the viewer, advected in different directions.
+  vec2 mp1 = qq*vec2(28.0,34.0) + df1*10.0;
+  vec2 mp2 = rot(ang*1.5)*(qq*vec2(42.0,48.0) + df2*12.0);
+  vec2 mp3 = rot(-ang)*(qq*vec2(62.0,68.0) + df3*15.0);
+  float micro = noise2(mp1)*0.45 + noise2(mp2)*0.33 + noise2(mp3)*0.22;
+  micro = smoothstep(0.56,0.82,micro);
+  float microFlick = 0.80 + 0.20*sin(t*1.2 + qq.x*7.0 + qq.y*4.0);
+  col += vec3(1.0) * micro * microFlick * (0.012 + 0.016*highE) * (0.14 + fogA*0.62);
+
+  // Slightly larger but still subtle drifted motes, very sparse.
+  vec2 sp = rot(ang*0.7)*(qq*9.0 + cam*4.0);
+  float speckCell = hash21(floor(sp*9.0 + seed*43.0));
+  float speck = smoothstep(0.12,0.0,length(fract(sp*9.0 + seed*43.0)-0.5))*step(0.9972,speckCell);
+  speck *= (0.025 + 0.035*highE) * (0.16 + 0.55*fogA);
   col += c2 * speck;
 
-  // subtle residual star field in far void, almost imperceptible
+  // almost imperceptible far field only
   float residue = smoothstep(0.9993,1.0,hash21(floor((uv+0.5)*vec2(170.0,240.0) + vec2(seed*31.0,t*0.14))));
-  col += vec3(0.55,0.62,0.78) * residue * 0.004;
+  col += vec3(0.52,0.60,0.76) * residue * 0.003;
 
-  // keep it dark
-  float voidN = fbm(q*0.30 + cam*0.25 + vec2(seed*4.0,-seed*3.0));
+  float voidN = fbm(qq*0.28 + cam*0.25 + vec2(seed*4.0,-seed*3.0));
   float voidMask = smoothstep(0.58,0.86,voidN) * (0.10 + 0.10*lowE);
-  col *= 1.0 - voidMask*0.42;
+  col *= 1.0 - voidMask*0.44;
 
-  float vig = 1.0 - smoothstep(0.46,1.0,length(q*vec2(0.74,1.0)));
+  float vig = 1.0 - smoothstep(0.46,1.0,length(qq*vec2(0.74,1.0)));
   col *= 0.82 + 0.18*vig;
 
   col *= 0.98 + 0.12*energy + 0.05*highE;
-  col += vec3(0.018,0.020,0.025);
+  col += vec3(0.015,0.018,0.023);
   col = pow(max(col,vec3(0.0)), vec3(0.94));
   col = clamp(col,0.0,1.0);
   gl_FragColor = vec4(col,1.0);
