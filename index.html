@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
 <meta name="theme-color" content="#02040a" />
-<title>SUBSPACE DRIFT BETA</title>
+<title>SUBSPACE DRIFT BETA 2</title>
 <style>
 :root{color-scheme:dark}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02040a;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;color:#f3f5ff;touch-action:none}
 #gl,#dust{position:fixed;inset:0;width:100%;height:100%;display:block}#dust{pointer-events:none}
@@ -22,55 +22,199 @@ input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;
 </head>
 <body>
 <canvas id="gl"></canvas><canvas id="dust"></canvas>
-<div id="tag">SUBSPACE DRIFT BETA · AUTO</div>
+<div id="tag">SUBSPACE DRIFT BETA · FREE DRIFT</div>
 <div id="ui">
-  <div class="top"><div><div class="brand">SUBSPACE DRIFT</div><div class="sub">BETA · GENERATIVE SUBSPACE FIELD</div></div><div class="grow"></div><button id="hide">×</button></div>
-  <div class="row"><button id="auto" class="auto active">AUTO</button><label class="pick" for="file">CHOOSE AUDIO</label><input id="file" class="file" type="file" accept="audio/*,.mp3,.wav,.m4a,.aac,.flac,.ogg"><button id="play" disabled>PLAY</button><button id="reseed">RESEED</button><span class="status" id="status">Autonomous formation running</span></div>
+  <div class="top"><div><div class="brand">SUBSPACE DRIFT</div><div class="sub">BETA 2 · GENERATIVE SUBSPACE FIELD</div></div><div class="grow"></div><button id="hide">×</button></div>
+  <div class="row"><button id="auto" class="auto active">FREE DRIFT</button><label class="pick" for="file">CHOOSE AUDIO</label><input id="file" class="file" type="file" accept="audio/*,.mp3,.wav,.m4a,.aac,.flac,.ogg"><button id="play" disabled>PLAY</button><button id="reseed">RESEED</button><span class="status" id="status">Free Drift is reshaping the field over time</span></div>
   <div class="settings"><div class="settingsTitle">World Bias</div>
-    <div class="setting"><label>Void</label><input data-k="void" type="range" min="0" max="1" step="0.01" value="0.72"><span class="val">72</span></div>
-    <div class="setting"><label>Stars</label><input data-k="stars" type="range" min="0" max="1" step="0.01" value="0.32"><span class="val">32</span></div>
-    <div class="setting"><label>Microdust</label><input data-k="dust" type="range" min="0" max="1" step="0.01" value="0.62"><span class="val">62</span></div>
-    <div class="setting"><label>Gas</label><input data-k="gas" type="range" min="0" max="1" step="0.01" value="0.60"><span class="val">60</span></div>
-    <div class="setting"><label>Event</label><input data-k="event" type="range" min="0" max="1" step="0.01" value="0.50"><span class="val">50</span></div>
-    <div class="setting"><label>Drift</label><input data-k="drift" type="range" min="0" max="1" step="0.01" value="0.52"><span class="val">52</span></div>
-    <div class="setting"><label>Color</label><input data-k="color" type="range" min="0" max="1" step="0.01" value="0.72"><span class="val">72</span></div>
-    <div class="setting"><label>Evolution</label><input data-k="evolution" type="range" min="0" max="1" step="0.01" value="0.52"><span class="val">52</span></div>
+    <div class="setting"><label>Void</label><input data-k="void" type="range" min="0" max="1" step="0.01" value="0.70"><span class="val">70</span></div>
+    <div class="setting"><label>Stars</label><input data-k="stars" type="range" min="0" max="1" step="0.01" value="0.28"><span class="val">28</span></div>
+    <div class="setting"><label>Microdust</label><input data-k="dust" type="range" min="0" max="1" step="0.01" value="0.64"><span class="val">64</span></div>
+    <div class="setting"><label>Gas</label><input data-k="gas" type="range" min="0" max="1" step="0.01" value="0.58"><span class="val">58</span></div>
+    <div class="setting"><label>Event</label><input data-k="event" type="range" min="0" max="1" step="0.01" value="0.56"><span class="val">56</span></div>
+    <div class="setting"><label>Drift</label><input data-k="drift" type="range" min="0" max="1" step="0.01" value="0.56"><span class="val">56</span></div>
+    <div class="setting"><label>Color</label><input data-k="color" type="range" min="0" max="1" step="0.01" value="0.76"><span class="val">76</span></div>
+    <div class="setting"><label>Evolution</label><input data-k="evolution" type="range" min="0" max="1" step="0.01" value="0.62"><span class="val">62</span></div>
   </div>
-  <div class="hint">The sliders bias the system rather than freezing it. AUTO continuously varies the field around your settings. Double-tap/click the visual to show or hide controls.</div>
+  <div class="hint">Free Drift continuously randomizes and blends the world parameters around your slider biases. The old fan-shaped spiral layer has been removed; this pass focuses on softer formation, direction changes, and ongoing shifts. Double-tap/click the visual to show or hide controls.</div>
 </div>
 <audio id="audio" preload="metadata"></audio>
 <script>
 (()=>{
 const glc=document.getElementById('gl'), dc=document.getElementById('dust'), dctx=dc.getContext('2d',{alpha:true});
-const gl=glc.getContext('webgl',{alpha:false,antialias:false,powerPreference:'high-performance'})||glc.getContext('experimental-webgl'); if(!gl){document.body.innerHTML='<div style="padding:24px">WebGL unavailable.</div>';return;}
-const state={auto:true,seed:Math.random()*1000,void:.72,stars:.32,dust:.62,gas:.60,event:.50,drift:.52,color:.72,evolution:.52};
+const gl=glc.getContext('webgl',{alpha:false,antialias:false,powerPreference:'high-performance'})||glc.getContext('experimental-webgl');
+if(!gl){document.body.innerHTML='<div style="padding:24px">WebGL unavailable.</div>';return;}
+
+const state={auto:true,seed:Math.random()*1000,void:.70,stars:.28,dust:.64,gas:.58,event:.56,drift:.56,color:.76,evolution:.62};
 let actual={...state}, targets={...state};
-const inputs=[...document.querySelectorAll('input[data-k]')]; inputs.forEach(el=>{const k=el.dataset.k,val=el.nextElementSibling;el.addEventListener('input',()=>{state[k]=+el.value;val.textContent=Math.round(+el.value*100); if(!state.auto) actual[k]=state[k];});});
-const autoBtn=document.getElementById('auto'); autoBtn.onclick=()=>{state.auto=!state.auto;autoBtn.classList.toggle('active',state.auto);document.getElementById('status').textContent=state.auto?'Autonomous formation running':'Manual bias hold';}; document.getElementById('reseed').onclick=()=>{state.seed=Math.random()*1000; targets={...state}; resetParticles();};
-const ui=document.getElementById('ui');document.getElementById('hide').onclick=()=>ui.classList.add('hidden');let lastTap=0;document.addEventListener('pointerup',e=>{if(e.target.closest&&e.target.closest('#ui'))return;const n=performance.now();if(n-lastTap<340)ui.classList.toggle('hidden');lastTap=n;});
+let nextShuffleAt=0;
+const inputs=[...document.querySelectorAll('input[data-k]')];
+inputs.forEach(el=>{
+  const k=el.dataset.k,val=el.nextElementSibling;
+  el.addEventListener('input',()=>{
+    state[k]=+el.value; val.textContent=Math.round(+el.value*100);
+    if(!state.auto){ actual[k]=state[k]; targets[k]=state[k]; }
+  });
+});
+
+const autoBtn=document.getElementById('auto'),status=document.getElementById('status');
+autoBtn.onclick=()=>{
+  state.auto=!state.auto;
+  autoBtn.classList.toggle('active',state.auto);
+  autoBtn.textContent=state.auto?'FREE DRIFT':'MANUAL HOLD';
+  status.textContent=state.auto?'Free Drift is reshaping the field over time':'Manual hold — your slider biases are being held';
+  if(state.auto) nextShuffleAt=0;
+};
+document.getElementById('reseed').onclick=()=>{state.seed=Math.random()*1000; targets={...state}; resetParticles(); nextShuffleAt=0;};
+const ui=document.getElementById('ui'); document.getElementById('hide').onclick=()=>ui.classList.add('hidden'); let lastTap=0; document.addEventListener('pointerup',e=>{if(e.target.closest&&e.target.closest('#ui'))return;const n=performance.now();if(n-lastTap<340)ui.classList.toggle('hidden');lastTap=n;});
 
 const vs=`attribute vec2 p; varying vec2 v; void main(){v=p*.5+.5;gl_Position=vec4(p,0.,1.);}`;
-const fs=`precision mediump float; varying vec2 v; uniform vec2 r; uniform float t,seed,uVoid,uGas,uEvent,uColor,uDrift,uLow,uMid,uHigh,uEnergy; 
-float h(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);} float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+1.),f.x),f.y);} float fbm(vec2 p){float s=0.,a=.5;for(int i=0;i<6;i++){s+=a*n(p);p=p*2.02+vec2(17.1,9.2);a*=.52;}return s;} float ridge(vec2 p){float s=0.,a=.5;for(int i=0;i<5;i++){float q=abs(n(p)*2.-1.);s+=a*(1.-q);p=p*2.05+vec2(12.7,-5.1);a*=.55;}return s;} mat2 R(float a){float s=sin(a),c=cos(a);return mat2(c,-s,s,c);} 
-vec3 pal(float k,float x){vec3 a=mix(vec3(.03,.08,.18),vec3(.23,.06,.20),smoothstep(.0,.35,k));vec3 b=mix(vec3(.10,.36,.62),vec3(.78,.24,.48),smoothstep(.25,.7,k));vec3 c=mix(vec3(.88,.46,.16),vec3(.28,.72,.76),smoothstep(.55,1.,k));return mix(mix(a,b,x),c,smoothstep(.62,1.,x));}
-void main(){vec2 uv=v;float asp=r.x/r.y;vec2 q=(uv-.5)*vec2(asp,1.);float tm=t*(.35+.7*uDrift);float roll=.14*sin(tm*.19+seed)+.08*sin(tm*.07+seed*2.1);q=R(roll)*q;vec2 cam=vec2(.22*sin(tm*.13+seed),-.36*tm)+vec2(.11*cos(tm*.09),.08*sin(tm*.11));vec3 col=vec3(.0025,.004,.010);float accum=0.;float colPhase=.5+.5*sin(seed*.31+tm*.025);
-for(int i=0;i<12;i++){float fi=float(i),z=fi/11.;float tr=fract(z+tm*(.030+.018*uMid)*(0.65+z*.58)+seed*.07);float depth=mix(5.8,.17,tr);vec2 p=q*depth+cam*(.25+z*1.9);p=R(roll*(.25+z)+.10*sin(tm*.08+z*5.))*p;p+=vec2(cos(tm*.10+z*8.+seed),sin(tm*.09+z*7.))*mix(.06,.34,uDrift)*(1.-tr);float broad=fbm(p*.22+seed);float sheet=fbm(p*.52+vec2(4.,-7.)-tm*.006);float fil=ridge(p*.76+vec2(-5.,3.)+tm*.004);float cav=fbm(p*.15+vec2(13.,2.));float d=broad*.46+sheet*.27+fil*.22-(cav-.5)*.16;d+=(uGas-.5)*.24+(uLow-.25)*.10;float body=smoothstep(.54,.80,d);float a=body*mix(.018,.13,pow(1.-tr,1.35))*uGas;a*=smoothstep(0.,.05,tr)*smoothstep(1.,.62,tr);float inner=fbm(p*1.35+vec2(7.,-4.));float e=ridge(p*.92+vec2(-3.,8.));float ci=clamp(inner*.8+e*.35,0.,1.);vec3 lc=pal(colPhase,ci);float sat=mix(.35,1.25,uColor);float grey=dot(lc,vec3(.299,.587,.114));lc=mix(vec3(grey),lc,sat);lc*=.55+.65*smoothstep(.38,.9,inner);col+=(1.-accum)*lc*a;accum+=(1.-accum)*a*.9;}
-// event field: ring / core / spiral influence, changes continuously rather than as a preset
-float evPhase=fract(tm*.018+seed*.13);vec2 ec=vec2(.28*sin(tm*.053+seed),.20*cos(tm*.041+seed*1.7));vec2 ep=q-ec;float rad=length(ep);float ring=exp(-pow((rad-(.18+.17*sin(evPhase*6.283)))*8.,2.));float spiral=.5+.5*sin(atan(ep.y,ep.x)*3. + rad*18. - tm*.8);float core=exp(-rad*rad*18.);float eventMask=uEvent*(.18*ring+.08*spiral*smoothstep(.65,.08,rad)+.12*core);vec3 ev=pal(fract(colPhase+.33),.85);col+=ev*eventMask*(.45+.35*uHigh);
-float voidN=fbm(q*.26+cam*.06+seed*3.);float voidMask=smoothstep(.58,.86,voidN)*uVoid*.78;col*=1.-voidMask;col*=.92+.14*uEnergy;col+=vec3(.006,.007,.012)*(1.-uVoid*.7);col=pow(max(col,0.),vec3(.92));gl_FragColor=vec4(clamp(col,0.,1.),1.);}`;
-function sh(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s;}const prog=gl.createProgram();gl.attachShader(prog,sh(gl.VERTEX_SHADER,vs));gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(prog);gl.useProgram(prog);const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);const ap=gl.getAttribLocation(prog,'p');gl.enableVertexAttribArray(ap);gl.vertexAttribPointer(ap,2,gl.FLOAT,false,0,0);
-const U={};['r','t','seed','uVoid','uGas','uEvent','uColor','uDrift','uLow','uMid','uHigh','uEnergy'].forEach(k=>U[k]=gl.getUniformLocation(prog,k));
+const fs=`precision mediump float; varying vec2 v; uniform vec2 r; uniform float t,seed,uVoid,uGas,uEvent,uColor,uDrift,uForm,uLow,uMid,uHigh,uEnergy; 
+float h(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);} 
+float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+1.),f.x),f.y);} 
+float fbm(vec2 p){float s=0.,a=.5;for(int i=0;i<6;i++){s+=a*n(p);p=p*2.02+vec2(17.1,9.2);a*=.52;}return s;} 
+float ridge(vec2 p){float s=0.,a=.5;for(int i=0;i<5;i++){float q=abs(n(p)*2.-1.);s+=a*(1.-q);p=p*2.05+vec2(12.7,-5.1);a*=.55;}return s;} 
+mat2 R(float a){float s=sin(a),c=cos(a);return mat2(c,-s,s,c);} 
+vec3 palette(float phase,float x){
+  vec3 d=mix(vec3(.02,.05,.12),vec3(.09,.03,.16),smoothstep(.0,.33,phase));
+  vec3 a=mix(vec3(.22,.48,.86),vec3(.72,.18,.48),smoothstep(.22,.62,phase));
+  vec3 b=mix(vec3(.96,.52,.20),vec3(.22,.86,.78),smoothstep(.55,1.,phase));
+  vec3 c=mix(a,b,smoothstep(.45,1.,x));
+  return mix(d,c,smoothstep(.12,.95,x));
+}
+float blob(vec2 p, vec2 c, float rx, float ry){vec2 d=(p-c)/vec2(rx,ry); return exp(-dot(d,d));}
+void main(){
+  vec2 uv=v; float asp=r.x/r.y; vec2 q=(uv-.5)*vec2(asp,1.); 
+  float tm=t*(.32+.7*uDrift); 
+  float roll=.14*sin(tm*.18+seed)+.08*sin(tm*.07+seed*2.1); q=R(roll)*q;
+  vec2 cam=vec2(.18*sin(tm*.13+seed),-.28*tm)+vec2(.08*cos(tm*.09),.06*sin(tm*.11));
+  vec3 col=vec3(.002,.0035,.009);
+  float accum=0.; float phase=.5+.5*sin(seed*.31+tm*.021);
+  
+  // Moving formation anchors - asymmetrical and soft, no fan/spiral artifact.
+  vec2 a1=vec2(.36*sin(tm*.051+seed*.7), .22*cos(tm*.039+seed*1.7));
+  vec2 a2=vec2(.28*cos(tm*.032+seed*2.3), -.24*sin(tm*.047+seed*.8));
+  vec2 a3=vec2(.20*sin(tm*.041+seed*1.9), .30*sin(tm*.029+seed*1.2));
+  float formGate=smoothstep(.12,.48,uForm) * (.5+.5*sin(tm*.15+seed*.4));
+  
+  for(int i=0;i<12;i++){
+    float fi=float(i), z=fi/11.;
+    float tr=fract(z+tm*(.027+.018*uMid)*(0.62+z*.56)+seed*.07);
+    float depth=mix(5.6,.18,tr);
+    vec2 p=q*depth+cam*(.25+z*1.85);
+    p=R(roll*(.22+z)+.08*sin(tm*.08+z*5.))*p;
+    p+=vec2(cos(tm*.08+z*8.+seed),sin(tm*.07+z*7.))*mix(.04,.28,uDrift)*(1.-tr);
 
-let W=0,H=0,DPR=1;function resize(){DPR=Math.min(devicePixelRatio||1,1.5);const nw=Math.floor(innerWidth*DPR),nh=Math.floor(innerHeight*DPR);if(nw!==W||nh!==H){W=nw;H=nh;glc.width=dc.width=W;glc.height=dc.height=H;gl.viewport(0,0,W,H);resetParticles();}}
-let particles=[];function resetParticles(){particles=[];const count=Math.max(700,Math.min(2400,Math.floor((W*H)/(430*932)*1500)));for(let i=0;i<count;i++)particles.push({x:(Math.random()*2-1)*1.6,y:(Math.random()*2-1)*1.4,z:Math.random()*1.0+.02,s:Math.random(),b:.3+Math.random()*.7,phase:Math.random()*6.28});}
-function evolve(tt){if(!state.auto)return;const evo=.15+.85*state.evolution;for(const k of ['void','stars','dust','gas','event','drift','color']){const phase={void:1.1,stars:2.7,dust:4.1,gas:5.3,event:0.4,drift:3.2,color:6.1}[k];const amp={void:.18,stars:.20,dust:.24,gas:.28,event:.34,drift:.22,color:.23}[k]*evo;targets[k]=Math.max(0,Math.min(1,state[k]+Math.sin(tt*(.025+.018*evo)+phase+state.seed*.01)*amp+Math.sin(tt*(.008+.006*evo)+phase*.7)*amp*.45));actual[k]+= (targets[k]-actual[k])*.008;}actual.evolution=state.evolution;}
-function drawParticles(tt){dctx.clearRect(0,0,W,H);const cx=W*.5,cy=H*.5;const drift=actual.drift, dustAmt=actual.dust, starAmt=actual.stars;const yaw=.20*Math.sin(tt*.035+state.seed)+.12*Math.sin(tt*.013);const pitch=.16*Math.cos(tt*.029+state.seed*.7);const roll=.20*Math.sin(tt*.021+state.seed*1.9);const cr=Math.cos(roll),sr=Math.sin(roll);for(let i=0;i<particles.length;i++){const p=particles[i];p.z-=.0011*(.35+drift*1.3);if(p.z<.015){p.z=1.02;p.x=(Math.random()*2-1)*1.6;p.y=(Math.random()*2-1)*1.4;p.s=Math.random();p.b=.3+Math.random()*.7;p.phase=Math.random()*6.28;}
-  const swirl=(.008+.018*dustAmt)*Math.sin(tt*.35+p.phase+p.z*9);p.x+=swirl*.015+Math.sin(tt*.11+p.phase)*.0007*dustAmt;p.y+=Math.cos(tt*.09+p.phase*1.3)*.0008*dustAmt;let x=p.x+Math.sin(tt*.045+p.z*4)*.12*drift+yaw*(p.z-.5);let y=p.y+Math.cos(tt*.038+p.z*5)*.09*drift+pitch*(p.z-.5);const rx=x*cr-y*sr,ry=x*sr+y*cr;const f=1/Math.max(.08,p.z);const sx=cx+rx*f*W*.34, sy=cy+ry*f*H*.34;if(sx< -10||sx>W+10||sy<-10||sy>H+10)continue;const depth=1-p.z;const isStar=p.s>0.72;const vis=isStar?starAmt:dustAmt; if(Math.random()>.18+.82*vis)continue; const size=(isStar?.35:.25)+(isStar?1.0:1.4)*depth*depth*(.25+.75*p.s);const alpha=(isStar?.10:.035)+vis*(isStar?.28:.16)*depth*p.b;dctx.globalAlpha=Math.min(.75,alpha);dctx.fillStyle=isStar?'rgba(235,242,255,1)':'rgba(210,225,240,1)';dctx.beginPath();dctx.arc(sx,sy,size*DPR,0,Math.PI*2);dctx.fill();}
-dctx.globalAlpha=1;}
+    float broad=fbm(p*.24+seed*.03);
+    float sheet=fbm(p*.58+vec2(4.,-7.)-tm*.006);
+    float fil=ridge(p*.78+vec2(-5.,3.)+tm*.004);
+    float cav=fbm(p*.16+vec2(13.,2.));
 
-const audio=document.getElementById('audio'),file=document.getElementById('file'),play=document.getElementById('play'),status=document.getElementById('status');let ctx=null,an=null,src=null,data=null,url=null,smLow=.25,smMid=.22,smHigh=.18,smEnergy=.22;function ensureAudio(){if(ctx)return;ctx=new (AudioContext||webkitAudioContext)();src=ctx.createMediaElementSource(audio);an=ctx.createAnalyser();an.fftSize=512;an.smoothingTimeConstant=.9;data=new Uint8Array(an.frequencyBinCount);src.connect(an);an.connect(ctx.destination);}function analyse(){if(!an||audio.paused){smLow+=(.25-smLow)*.02;smMid+=(.22-smMid)*.02;smHigh+=(.18-smHigh)*.02;smEnergy+=(.22-smEnergy)*.02;return;}an.getByteFrequencyData(data);let lo=0,mi=0,hi=0,lc=0,mc=0,hc=0,sum=0;for(let i=0;i<data.length;i++){const x=data[i]/255;sum+=x;if(i<data.length*.12){lo+=x;lc++;}else if(i<data.length*.5){mi+=x;mc++;}else{hi+=x;hc++;}}smLow+=(lo/lc-smLow)*.07;smMid+=(mi/mc-smMid)*.07;smHigh+=(hi/hc-smHigh)*.07;smEnergy+=(sum/data.length-smEnergy)*.06;}
-file.onchange=()=>{const f=file.files&&file.files[0];if(!f)return;if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(f);audio.src=url;play.disabled=false;status.textContent=f.name;};play.onclick=async()=>{ensureAudio();if(ctx.state==='suspended')await ctx.resume();if(audio.paused){await audio.play();play.textContent='PAUSE';}else{audio.pause();play.textContent='PLAY';}};audio.onended=()=>play.textContent='PLAY';
-let start=performance.now();function frame(now){resize();const tt=(now-start)/1000;evolve(tt);analyse();gl.uniform2f(U.r,W,H);gl.uniform1f(U.t,tt);gl.uniform1f(U.seed,state.seed);gl.uniform1f(U.uVoid,actual.void);gl.uniform1f(U.uGas,actual.gas);gl.uniform1f(U.uEvent,actual.event);gl.uniform1f(U.uColor,actual.color);gl.uniform1f(U.uDrift,actual.drift);gl.uniform1f(U.uLow,smLow);gl.uniform1f(U.uMid,smMid);gl.uniform1f(U.uHigh,smHigh);gl.uniform1f(U.uEnergy,smEnergy);gl.drawArrays(gl.TRIANGLES,0,6);drawParticles(tt);requestAnimationFrame(frame);}requestAnimationFrame(frame);
+    // Forming regions gather near moving anchors.
+    float c1=blob(p,a1*(1.2+z*.5),1.7,1.1);
+    float c2=blob(p,a2*(1.0+z*.4),1.2,1.8);
+    float c3=blob(p,a3*(1.1+z*.3),1.5,1.4);
+    float anchor=max(c1,max(c2,c3));
+    float halo=exp(-pow(length(p-a2*(1.1+z*.4))-(.7+.35*uForm),2.)*4.5);
+
+    float density=broad*.38 + sheet*.23 + fil*.19 - (cav-.5)*.13;
+    density += uGas*.16 + anchor*(.18+.48*uEvent*uForm) + halo*.12*uEvent*formGate;
+    density += (uLow-.25)*.08;
+
+    float body=smoothstep(.56,.80,density);
+    float a=body*mix(.010,.12,pow(1.-tr,1.30))*uGas;
+    a*=smoothstep(0.,.05,tr)*smoothstep(1.,.60,tr);
+
+    float inner=fbm(p*1.28+vec2(7.,-4.));
+    float ed=fil*.55 + anchor*.65 + halo*.45;
+    float ci=clamp(inner*.55+ed*.55,0.,1.);
+    vec3 lc=palette(fract(phase+anchor*.25),ci);
+    float sat=mix(.35,1.40,uColor); float grey=dot(lc,vec3(.299,.587,.114)); lc=mix(vec3(grey),lc,sat);
+    lc*=.40 + .85*smoothstep(.30,.92,inner+anchor*.45);
+    col += (1.-accum)*lc*a;
+    accum += (1.-accum)*a*.92;
+  }
+
+  // Diffuse event-forming glow: feels like something is emerging, not a static spiral.
+  vec2 ep=q-cam*.07;
+  float knots=blob(ep,a1,.22+.18*uEvent,.18+.12*uEvent)+blob(ep,a2,.16+.22*uEvent,.26+.16*uEvent)+blob(ep,a3,.24+.20*uEvent,.16+.15*uEvent);
+  float flow=fbm(ep*2.2 + vec2(tm*.015,-tm*.022))*.55 + ridge(ep*1.5 + vec2(-tm*.017,tm*.012))*.45;
+  float shell=exp(-pow(length(ep-a1*.5)-(.10+.22*uForm),2.)*26.0);
+  float eventMask=(knots*.32 + flow*.14*uEvent + shell*.18*uEvent) * uEvent * (.35+.65*uForm);
+  col += palette(fract(phase+.18),.82) * eventMask * (.22+.55*uHigh);
+
+  float voidN=fbm(q*.22+cam*.05+seed*3.); float voidMask=smoothstep(.60,.86,voidN)*uVoid*.75; col*=1.-voidMask;
+  col*=.92+.14*uEnergy; col+=vec3(.006,.007,.012)*(1.-uVoid*.7);
+  col=pow(max(col,0.),vec3(.92)); gl_FragColor=vec4(clamp(col,0.,1.),1.);
+}`;
+
+function sh(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s;}
+const prog=gl.createProgram(); gl.attachShader(prog,sh(gl.VERTEX_SHADER,vs)); gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,fs)); gl.linkProgram(prog); gl.useProgram(prog);
+const buf=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buf); gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW); const ap=gl.getAttribLocation(prog,'p'); gl.enableVertexAttribArray(ap); gl.vertexAttribPointer(ap,2,gl.FLOAT,false,0,0);
+const U={}; ['r','t','seed','uVoid','uGas','uEvent','uColor','uDrift','uForm','uLow','uMid','uHigh','uEnergy'].forEach(k=>U[k]=gl.getUniformLocation(prog,k));
+
+let W=0,H=0,DPR=1; function resize(){DPR=Math.min(devicePixelRatio||1,1.5);const nw=Math.floor(innerWidth*DPR),nh=Math.floor(innerHeight*DPR);if(nw!==W||nh!==H){W=nw;H=nh;glc.width=dc.width=W;glc.height=dc.height=H;gl.viewport(0,0,W,H);resetParticles();}}
+let particles=[]; function resetParticles(){particles=[]; const count=Math.max(700,Math.min(2400,Math.floor((W*H)/(430*932)*1500))); for(let i=0;i<count;i++)particles.push({x:(Math.random()*2-1)*1.6,y:(Math.random()*2-1)*1.4,z:Math.random()*1.0+.02,s:Math.random(),b:.3+Math.random()*.7,phase:Math.random()*6.28});}
+
+function scheduleShuffle(tt){ const evo=.2+.8*state.evolution; nextShuffleAt=tt + (16 + Math.random()*18) * (1.15 - evo*0.45); }
+function evolve(tt){
+  if(!state.auto) return;
+  if(tt>=nextShuffleAt) {
+    const evo=.15+.85*state.evolution;
+    const ranges={void:.18,stars:.22,dust:.24,gas:.28,event:.28,drift:.22,color:.24};
+    for(const k of ['void','stars','dust','gas','event','drift','color']){
+      const r=ranges[k] * (0.65 + evo*0.7);
+      let v=state[k] + (Math.random()*2-1)*r;
+      // bias free drift toward meaningful, usable space.
+      if(k==='gas') v=Math.max(.18, Math.min(1,v));
+      if(k==='event') v=Math.max(.14, Math.min(1,v));
+      if(k==='void') v=Math.max(.25, Math.min(1,v));
+      targets[k]=Math.max(0,Math.min(1,v));
+    }
+    scheduleShuffle(tt);
+  }
+  for(const k of ['void','stars','dust','gas','event','drift','color']) actual[k] += (targets[k]-actual[k])*(0.002 + 0.016*state.evolution);
+  actual.evolution=state.evolution;
+  // formation breathes independently of slider values.
+  actual.form = .5 + .5*Math.sin(tt*(.028 + .09*state.evolution) + state.seed*.03) * (.60 + .40*state.event);
+}
+
+function drawParticles(tt){
+  dctx.clearRect(0,0,W,H);
+  const cx=W*.5, cy=H*.5; const drift=actual.drift||state.drift, dustAmt=actual.dust||state.dust, starAmt=actual.stars||state.stars; const form=actual.form||0;
+  const yaw=.20*Math.sin(tt*.035+state.seed)+.12*Math.sin(tt*.013); const pitch=.16*Math.cos(tt*.029+state.seed*.7); const roll=.20*Math.sin(tt*.021+state.seed*1.9); const cr=Math.cos(roll), sr=Math.sin(roll);
+  for(let i=0;i<particles.length;i++){
+    const p=particles[i];
+    p.z -= .0010*(.38+drift*1.5);
+    if(p.z<.015){p.z=1.02;p.x=(Math.random()*2-1)*1.6;p.y=(Math.random()*2-1)*1.4;p.s=Math.random();p.b=.3+Math.random()*.7;p.phase=Math.random()*6.28;}
+    const swirl=(.010+.020*dustAmt+.012*form)*Math.sin(tt*.35+p.phase+p.z*9);
+    p.x += swirl*.016 + Math.sin(tt*.11+p.phase)*.0008*dustAmt;
+    p.y += Math.cos(tt*.09+p.phase*1.3)*.0009*dustAmt;
+    let x=p.x + Math.sin(tt*.045+p.z*4)*.12*drift + yaw*(p.z-.5);
+    let y=p.y + Math.cos(tt*.038+p.z*5)*.09*drift + pitch*(p.z-.5);
+    const rx=x*cr-y*sr, ry=x*sr+y*cr; const f=1/Math.max(.08,p.z); const sx=cx+rx*f*W*.34, sy=cy+ry*f*H*.34;
+    if(sx< -10||sx>W+10||sy<-10||sy>H+10) continue;
+    const depth=1-p.z; const isStar=p.s>0.74; const vis=isStar?starAmt:dustAmt; if(Math.random()>.12+.88*vis) continue;
+    const size=(isStar?.35:.25)+(isStar?1.0:1.5)*depth*depth*(.25+.75*p.s); const alpha=(isStar?.08:.028)+vis*(isStar?.26:.17)*depth*p.b;
+    dctx.globalAlpha=Math.min(.72,alpha); dctx.fillStyle=isStar?'rgba(235,242,255,1)':'rgba(210,225,240,1)'; dctx.beginPath(); dctx.arc(sx,sy,size*DPR,0,Math.PI*2); dctx.fill();
+  }
+  dctx.globalAlpha=1;
+}
+
+const audio=document.getElementById('audio'),file=document.getElementById('file'),play=document.getElementById('play');
+let ctx=null,an=null,src=null,data=null,url=null,smLow=.25,smMid=.22,smHigh=.18,smEnergy=.22;
+function ensureAudio(){if(ctx)return;ctx=new (AudioContext||webkitAudioContext)();src=ctx.createMediaElementSource(audio);an=ctx.createAnalyser();an.fftSize=512;an.smoothingTimeConstant=.9;data=new Uint8Array(an.frequencyBinCount);src.connect(an);an.connect(ctx.destination);} 
+function analyse(){if(!an||audio.paused){smLow+=(.25-smLow)*.02;smMid+=(.22-smMid)*.02;smHigh+=(.18-smHigh)*.02;smEnergy+=(.22-smEnergy)*.02;return;}an.getByteFrequencyData(data);let lo=0,mi=0,hi=0,lc=0,mc=0,hc=0,sum=0;for(let i=0;i<data.length;i++){const x=data[i]/255;sum+=x;if(i<data.length*.12){lo+=x;lc++;}else if(i<data.length*.5){mi+=x;mc++;}else{hi+=x;hc++;}}smLow+=(lo/lc-smLow)*.07;smMid+=(mi/mc-smMid)*.07;smHigh+=(hi/hc-smHigh)*.07;smEnergy+=(sum/data.length-smEnergy)*.06;}
+file.onchange=()=>{const f=file.files&&file.files[0];if(!f)return;if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(f);audio.src=url;play.disabled=false;status.textContent=f.name;};
+play.onclick=async()=>{ensureAudio();if(ctx.state==='suspended')await ctx.resume();if(audio.paused){await audio.play();play.textContent='PAUSE';}else{audio.pause();play.textContent='PLAY';}}; audio.onended=()=>play.textContent='PLAY';
+
+let start=performance.now(); scheduleShuffle(0); actual.form=0.3;
+function frame(now){
+  resize(); const tt=(now-start)/1000; evolve(tt); analyse();
+  gl.uniform2f(U.r,W,H); gl.uniform1f(U.t,tt); gl.uniform1f(U.seed,state.seed); gl.uniform1f(U.uVoid,actual.void); gl.uniform1f(U.uGas,actual.gas); gl.uniform1f(U.uEvent,actual.event); gl.uniform1f(U.uColor,actual.color); gl.uniform1f(U.uDrift,actual.drift); gl.uniform1f(U.uForm,actual.form||0.); gl.uniform1f(U.uLow,smLow); gl.uniform1f(U.uMid,smMid); gl.uniform1f(U.uHigh,smHigh); gl.uniform1f(U.uEnergy,smEnergy); gl.drawArrays(gl.TRIANGLES,0,6);
+  drawParticles(tt); requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
 })();
 </script>
 </body></html>
